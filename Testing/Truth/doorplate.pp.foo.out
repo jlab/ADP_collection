@@ -1,0 +1,45 @@
+Answer: 
+==== candidate starts ====
+floor:
+  room-id: 'M3-114'
+    person: 'Stefan
+  room-id: 'M3-107'
+    person: 'Maddis'
+    person: 'Jan
+==========================
+
+==== candidate starts ====
+floor:
+  room-id: 'M3-114'
+    person: 'Stefan
+  room-id: 'M3-107'
+    person: 'Maddis</person><person>Jan
+==========================
+
+==== candidate starts ====
+floor:
+  room-id: 'M3-114'
+    person: 'Stefan</person></office><office><id>M3-107</id><person>Maddis'
+    person: 'Jan
+==========================
+
+==== candidate starts ====
+floor:
+  room-id: 'M3-114'
+    person: 'Stefan</person></office><office><id>M3-107</id><person>Maddis</person><person>Jan
+==========================
+
+==== candidate starts ====
+floor:
+  room-id: 'M3-114</id><person>Stefan</person></office><office><id>M3-107'
+    person: 'Maddis'
+    person: 'Jan
+==========================
+
+==== candidate starts ====
+floor:
+  room-id: 'M3-114</id><person>Stefan</person></office><office><id>M3-107'
+    person: 'Maddis</person><person>Jan
+==========================
+
+

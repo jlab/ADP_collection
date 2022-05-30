@@ -1,0 +1,7 @@
+Answer: 
+( sadd( <0,1> sadd( <1,2> nil( 1 ) ) ) , 1 )
+( sadd( <0,1> adds( nil( 1 ) <1,2> ) ) , 1 )
+( adds( sadd( <0,1> nil( 1 ) ) <1,2> ) , 1 )
+( adds( adds( nil( 1 ) <0,1> ) <1,2> ) , 1 )
+( fork( pair( <0,1> nil( 1 ) <1,2> ) nil( 1 ) ) , 1 )
+

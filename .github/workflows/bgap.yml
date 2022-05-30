@@ -1,0 +1,30 @@
+name: test gapc examples
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    
+jobs:
+  bgap:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install dependencies
+      run: sudo apt-get install make python3 python3-pip
+    - name: Install Bellman's gapc
+      run: |
+        sudo add-apt-repository ppa:janssenlab/software
+        sudo apt-get update
+        sudo apt-get install bellmansgapc
+    - uses: actions/checkout@v2
+    - name: execute tests
+      run: |
+        cd Testing/
+        bash run.sh /usr/
+    - name: python dependencies
+      run: pip install pandas numpy
+    - name: python tests
+      run: |
+        cd Testing/
+        python test_python_dp.py

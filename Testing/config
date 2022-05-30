@@ -1,0 +1,146 @@
+########## Matrix Chain Multiplication
+# test pure minimization
+check_new_old_eq matrix_chain_multiplication.gap mcm minmult "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)" basicexample
+
+# test grammar with additional filtering
+check_new_old_eq matrix_chain_multiplication.gap mcm reject_wrong_candidates "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)" basicexample_noreject
+
+# last matrix has wrong row number, input shall be rejected, i.e. empty answer list
+check_new_old_eq matrix_chain_multiplication.gap mcm reject_wrong_candidates "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(80x20)" reject_input
+check_new_old_eq matrix_chain_multiplication.gap mcm assert_minmultenum "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)" pass_2
+check_new_old_eq matrix_chain_multiplication.gap mcm assert_minmultenumcount "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)" pass_3
+
+# test prettyprint
+check_new_old_eq matrix_chain_multiplication.gap mcm ppminmult "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)" ppminmult
+
+# depth
+check_new_old_eq matrix_chain_multiplication.gap mcm depthminmultpp "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)" foo
+check_new_old_eq matrix_chain_multiplication.gap mcm minmultdepthpp "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)" foo
+check_new_old_eq matrix_chain_multiplication.gap mcm kdepthminmultpp "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)" foo
+
+########## El Mamun
+check_new_old_eq elmamun.gap mcm pp "1+2*3*4+5" foo
+check_new_old_eq elmamun.gap mcm buyerpp "1+2*3*4+5" foo
+check_new_old_eq elmamun.gap mcm sellerpp "1+2*3*4+5" foo
+check_new_old_eq elmamun.gap mcm timepp "1+2*3*4+5" foo
+
+# example that violates Bellman's Principle due to the use of the '-' operator
+check_new_old_eq elmamun.gap mcm buyerpp "1+2-3*4+5" violateBP
+check_new_old_eq elmamun.gap mcm ppbuyer "1+2-3*4+5" violateBP
+
+########## Binary Search Tree
+check_new_old_eq binary_search_tree.gap bst matpp "1:0.22,3:0.18,4:0.2,8:0.05,10:0.25,11:0.02,15:0.08," foo
+check_new_old_eq binary_search_tree.gap bst ppmat "1:0.22,3:0.18,4:0.2,8:0.05,10:0.25,11:0.02,15:0.08," foo
+check_new_old_eq binary_search_tree.gap bst ppcount "1:0.22,3:0.18,4:0.2,8:0.05,10:0.25,11:0.02,15:0.08," foo
+check_new_old_eq binary_search_tree.gap bst matppcount "1:0.22,3:0.18,4:0.2,8:0.05,10:0.25,11:0.02,15:0.08," foo
+
+########### HMMs
+check_new_old_eq hmm_sonneregen.gap hmm enum "SSRR" foo
+check_new_old_eq hmm_sonneregen.gap hmm viterbistatesmult "SSRR" foo
+check_new_old_eq hmm_sonneregen.gap hmm fwd "SSRR" foo
+check_new_old_eq hmm_sonneregen.gap hmm multviterbistates "SSRR" foo
+
+check_new_old_eq hmm_casino.gap hmm enum "15626" foo
+check_new_old_eq hmm_casino.gap hmm viterbistatesmult "15626" foo
+check_new_old_eq hmm_casino.gap hmm fwd "15626" foo
+check_new_old_eq hmm_casino.gap hmm multviterbistates "15626" foo
+
+check_new_old_eq hmm_cpg.gap hmm enum "GCGGCCGA" foo
+check_new_old_eq hmm_cpg.gap hmm viterbistatesmult "GCGGCCGATATACTACAGTTGGCTTGAATGAACCAGGCCCGGCGCGGACAACCTGGGCCCCGGCGGTCGCCCATACCGCAATGGGAGCCGTTAACTCGCT" foo
+check_new_old_eq hmm_cpg.gap hmm fwd "GCGGCCGATATACTACAGTTGGCTTGAATGAACCAGGCCCGGCGCGGACAACCTGGGCCCCGGCGGTCGCCCATACCGCAATGGGAGCCGTTAACTCGCT" foo
+check_new_old_eq hmm_cpg.gap hmm multviterbistates "GCGGCCGA" foo
+
+############ sequence alignments
+check_new_old_eqTwoTrack alignments.gap nw ins_needlemanwunsch_count "FREIZEIT" "ZEITGEIST" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_traces_count "FREIZEIT" "ZEITGEIST" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_semiglobal_count "ZEITGEIST" "EILS" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_endgapfree_count "FREIZEILT" "ZEITGEIST" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_smithwaterman_count "EISZEITEN" "GEZEITIG" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_gotoh_count "CG" "CCGA" foo
+
+check_new_old_eqTwoTrack alignments.gap nw ins_needlemanwunsch_similaritycount "FREIZEIT" "ZEITGEIST" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_semiglobal_similaritycount "ZEITGEIST" "EILS" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_endgapfree_similaritycount "FREIZEILT" "ZEITGEIST" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_smithwaterman_similaritycount "EISZEITEN" "GEZEITIG" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_gotoh_similaritycount "CG" "CCGA" foo
+
+check_new_old_eqTwoTrack alignments.gap nw ins_needlemanwunsch_similaritypp "FREIZEIT" "ZEITGEIST" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_semiglobal_similaritypp "ZEITGEIST" "EILS" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_endgapfree_similaritypp "FREIZEILT" "ZEITGEIST" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_smithwaterman_similaritypp "EISZEITEN" "GEZEITIG" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_gotoh_similaritypp "CG" "CCGA" foo
+
+check_new_old_eqTwoTrack alignments.gap nw ins_gotoh_pp "AC" "DC" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_gotoh_ppenum "AC" "DC" foo
+check_new_old_eqTwoTrack alignments.gap nw ins_gotoh_countmanual "AC" "DC" foo
+
+############ RNA
+LDLIBS_EXTRA="-lrna"
+check_compiler_output ../../ rnafolding.gap ins_g1_count semanticerror grep 'is part in an infinite recursion.'
+check_compiler_output ../../ rnafolding.gap ins_g2_count semanticerror grep 'is part in an infinite recursion.'
+check_new_old_eq rnafolding.gap nw ins_g3_count "ACGGAACCAACAUGGAUUCAUGCUUCGGCCCUGGUCGCGC" foo
+check_new_old_eq rnafolding.gap nw ins_g4_count "ACGGAACCAACAUGGAUUCAUGCUUCGGCCCUGGUCGCGC" foo
+check_new_old_eq rnafolding.gap nw ins_g5_count "ACGGAACCAACAUGGAUUCAUGCUUCGGCCCUGGUCGCGC" foo
+check_new_old_eq rnafolding.gap nw ins_g6_count "ACGGAACCAACAUGGAUUCAUGCUUCGGCCCUGGUCGCGC" foo
+
+check_new_old_eq rnafolding.gap nw ins_g3_dbcount "ACGGAACCAACAU" foo
+check_new_old_eq rnafolding.gap nw ins_g4_dbcount "ACGGAACCAACAU" foo
+check_new_old_eq rnafolding.gap nw ins_g5_dbcount "ACGGAACCAACAU" foo
+check_new_old_eq rnafolding.gap nw ins_g6_dbcount "ACGGAACCAACAU" foo
+
+check_new_old_eq rnafolding.gap nw ins_g3_bpmaxdb "ACGGAACCAACAUGGAUUCAU" foo
+check_new_old_eq rnafolding.gap nw ins_g4_bpmaxdb "ACGGAACCAACAUGGAUUCAU" foo
+check_new_old_eq rnafolding.gap nw ins_g5_bpmaxdb "ACGGAACCAACAUGGAUUCAU" foo
+check_new_old_eq rnafolding.gap nw ins_g6_bpmaxdb "ACGGAACCAACAUGGAUUCAU" foo
+
+check_new_old_eq rnafolding.gap nw ins_nussinov_enumcount "CG" foo
+check_new_old_eq rnafolding.gap nw ins_nussinov_dbucount "CG" foo
+
+############ design grammars
+LDLIBS_EXTRA=""
+check_new_old_eq doorplate.gap bielefeld pp "<floor><office><id>M3-114</id><person>Stefan</person></office><office><id>M3-107</id><person>Maddis</person><person>Jan</person></office></floor>" foo
+check_new_old_eq doorplate.gap bielefeld count "<floor><office><id>M3-114</id><person>Stefan</person></office><office><id>M3-107</id><person>Maddis</person><person>Jan</person></office></floor>" foo
+
+############ palindromes
+check_new_old_eq palindromes.gap pal palin_pp "abbabaabba" foo
+check_new_old_eq palindromes.gap pal palloc_pp "anfangabbabaabbaende" foo
+check_new_old_eq palindromes.gap pal palin_count "abbabaabba" foo
+check_new_old_eq palindromes.gap pal palloc_count "anfangabbabaabbaende" foo
+check_new_old_eq palindromes.gap pal palin_scorecount "abbabaabba" foo
+check_new_old_eq palindromes.gap pal palloc_scorecount "anfangabbabaabbaende" foo
+
+############ gene finder
+check_new_old_eq genefinder.gap orf ins_aa "AAUAUGUCUGUUAAUGCAAUGGCGGCGAUUGAGUUUUCCAAGUAGAAUGAGGAUG" foo
+check_new_old_eq genefinder.gap orf ins_aacount "AAUAUGUCUGUUAAUGCAAUGGCGGCGAUUGAGUUUUCCAAGUAGAAUGAGGAUG" foo
+check_new_old_eq genefinder.gap orf ins_scoreaa "AAUAUGUCUGUUAAUGCAAUGGCGGCGAUUGAGUUUUCCAAGUAGAAUGAGGAUG" foo
+check_new_old_eq genefinder.gap orf ins_aascore "AAUAUGUCUGUUAAUGCAAUGGCGGCGAUUGAGUUUUCCAAGUAGAAUGAGGAUG" foo
+check_new_old_eq genefinder.gap orf ins_count "AAUAUGUCUGUUAAUGCAAUGGCGGCGAUUGAGUUUUCCAAGUAGAAUGAGGAUG" foo
+
+############ satisfiability
+check_new_old_eq satisfiability.gap sat ins_enum "PP-&-NP" foo
+check_new_old_eq satisfiability.gap sat ins_pp "PP-&-NP" foo
+check_new_old_eq satisfiability.gap sat ins_sateqapp "PP-&-NP" foo
+
+############ table design
+GAPC="gapc -l 1 --tab A --tab D --tab I --tab R"
+check_compiler_output ../../ alignments.gap ins_trace_similarity tabledesign grep 'n^2'
+GAPC="gapc -l 1"
+check_compiler_output ../../ alignments.gap ins_trace_similarity tabledesign grep '2^n'
+GAPC="gapc -l 1 --tab R"
+check_compiler_output ../../ alignments.gap ins_trace_similarity tabledesign grep 'n^4'
+GAPC="gapc -l 1 --tab A --tab R"
+check_compiler_output ../../ alignments.gap ins_trace_similarity tabledesign grep 'n^4'
+GAPC="gapc -l 1 --tab I --tab D"
+check_compiler_output ../../ alignments.gap ins_trace_similarity tabledesign grep 'n^3'
+GAPC="gapc -l 1 --tab I --tab D --tab R"
+check_compiler_output ../../ alignments.gap ins_trace_similarity tabledesign grep 'n^2'
+
+GAPC="gapc"
+############ stochastics
+check_new_old_eq hmm_markovchain.gap stochastics ins_ppprobenum "ACCT" foo
+
+
+############ traces and alignments
+check_new_old_eqTwoTrack alignments.gap alntr ins_nweditopscount "MVKQIES" "MVYQVKDKADL" alntr
+check_new_old_eqTwoTrack alignments.gap alntr ins_needlemanwunsch_count "MVKQIES" "MVYQVKDKADL" alntr
+check_new_old_eqTwoTrack alignments.gap alntr ins_traces_count "MVKQIES" "MVYQVKDKADL" alntr
