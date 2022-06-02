@@ -221,25 +221,26 @@ algebra alg_mult implements sig_weather(alphabet=char, answer=Rope) {
 grammar gra_weather uses sig_weather(axiom=start) {
   start = transition_start_hoch(CONST_FLOAT(0.5), hoch_emission, hoch)
         | transition_start_tief(CONST_FLOAT(0.5), tief_emission, tief)
+        | nil(EMPTY)
         # h;
 
   hoch  = transition_hoch_tief(CONST_FLOAT(0.3), tief_emission, tief)
         | transition_hoch_hoch(CONST_FLOAT(0.7), hoch_emission, hoch)
-	| nil(EMPTY)
+        | nil(EMPTY)
         # h;
-	
+
   tief  = transition_tief_tief(CONST_FLOAT(0.6), tief_emission, tief)
         | transition_tief_hoch(CONST_FLOAT(0.4), hoch_emission, hoch)
-	| nil(EMPTY)
+        | nil(EMPTY)
         # h;
-	
+
   hoch_emission = emission_hoch_sonne(CONST_FLOAT(0.8), CHAR('S'))
-		| emission_hoch_regen(CONST_FLOAT(0.2), CHAR('R'))
-		# h;
+                | emission_hoch_regen(CONST_FLOAT(0.2), CHAR('R'))
+                # h;
 
   tief_emission = emission_tief_sonne(CONST_FLOAT(0.1), CHAR('S'))
-		| emission_tief_regen(CONST_FLOAT(0.9), CHAR('R'))
-		# h;
+                | emission_tief_regen(CONST_FLOAT(0.9), CHAR('R'))
+                # h;
 }
 
 instance enum = gra_weather(alg_enum);
