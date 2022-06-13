@@ -143,7 +143,7 @@ def model_to_grammar(states: dict) -> str:
                      state['trans'][k+1],
                      state['trans'][k+1]) for k in range(0, len(state['trans']), 2)}
             if 'end' not in state.keys():
-                norm_transitions.update({'nil': '0'})
+                norm_transitions.update({'end': '1.0'})
             else:
                 assert state['end'] == ['0']
         else:
@@ -172,13 +172,13 @@ def model_to_grammar(states: dict) -> str:
         # transform transition information into GAP production rules
         code_transitions = []
         for to_state, prob in norm_transitions.items():
-            if (to_state != 'nil'):
-                if (emissions is None) and (nt_emissions is None):
-                    code_transitions.append('    silent_transition(CONST_FLOAT(%s), state_%s)' % (prob, to_state))
+            if (emissions is None) and (nt_emissions is None):
+                if to_state == "end":
+                    code_transitions.append('    state_end')
                 else:
-                    code_transitions.append('    transition(CONST_CHAR(\'%s\'), CONST_FLOAT(%s), %s, state_%s)' % (label, prob, nt_emissions, to_state))
+                    code_transitions.append('    silent_transition(CONST_FLOAT(%s), state_%s)' % (prob, to_state))
             else:
-                code_transitions.append('    nil(EMPTY)')
+                code_transitions.append('    transition(CONST_CHAR(\'%s\'), CONST_FLOAT(%s), %s, state_%s)' % (label, prob, nt_emissions, to_state))
 
 
         gra += '  state_%s =\n%s\n    # h;\n' % (name, ' |\n'.join(code_transitions))
@@ -186,6 +186,8 @@ def model_to_grammar(states: dict) -> str:
             gra += '  emit_%s =\n%s\n    # h;\n' % (name, ' |\n'.join(emissions))
 
         gra += "\n"
+
+    gra += '  state_end = nil(EMPTY) # h;\n'
     gra += "}\n"
 
     return gra
@@ -210,7 +212,7 @@ def generic_sig_algs() -> str:
         "    return prob * e * t;\n"
         "  }\n"
         "  float nil(void) {\n"
-        "    return 1;\n"
+        "    return 1.0;\n"
         "  }\n"
         "  float emission(float prob, char emission) {\n"
         "    return prob;\n"
