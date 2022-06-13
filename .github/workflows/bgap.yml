@@ -28,3 +28,4 @@ jobs:
       run: |
         cd Testing/
         python test_python_dp.py
+        python test_tmhmm.py
