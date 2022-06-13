@@ -25,7 +25,7 @@ class matrixchainmultiplication(TestCase):
     def setUp(self):
         pass
 
-    def TearDown(self):
+    def tearDown(self):
         pass
 
     def test_minmult(self):
@@ -54,7 +54,7 @@ class el_mamun(TestCase):
     def setUp(self):
         pass
 
-    def TearDown(self):
+    def tearDown(self):
         pass
 
     def test_elmamun(self):
@@ -106,7 +106,7 @@ class binarysearchtree(TestCase):
             Branch(Leaf(10), 11, Leaf(15))
         )
 
-    def TearDown(self):
+    def tearDown(self):
         self.tree1 = None
         self.tree2 = None
 
@@ -215,7 +215,7 @@ class hmm(TestCase):
                                       "CGCAATGGGAGCCGTTAACTCGCT")]
 
 
-    def TearDown(self):
+    def tearDown(self):
         pass
 
     def test_hmm_sonneregen(self):
@@ -280,7 +280,7 @@ class align(TestCase):
     def setUp(self):
         pass
 
-    def TearDown(self):
+    def tearDown(self):
         pass
 
     def test_needlemanwunsch(self):
@@ -332,7 +332,7 @@ class sat(TestCase):
     def setUp(self):
         pass
 
-    def TearDown(self):
+    def tearDown(self):
         pass
 
     def _parse_gapc_answer(self, fp_file):
