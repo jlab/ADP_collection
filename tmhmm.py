@@ -119,15 +119,39 @@ def model_to_grammar(states: dict) -> str:
     """
     gra = "grammar gra_tmhmm uses sig_tmhmm(axiom = state_begin) {\n"
     for name, state in states.items():
+        # skip the header "state", which defined the alphabet
         if (name == 'header'):
             continue
 
+        # normalize label
+        # - use first char
+        # - use ' ' if no label is given
         label = " "
         if 'label' in state.keys():
             assert len(state['label']) == 1
             label = state['label'][0]
 
-        nt_emissions = "emissions_"
+        # normalize transitions
+        # - from 'a:', 'b', 'c:', 'd' build dict {'a': 'b', 'c': 'd'}
+        # - add 'nil': '0' if ending parse in this state is allowed
+        # - use float format instead of int, i.e. 0.0 instead of 0
+        norm_transitions = None
+        if ':' in ''.join(state['trans']):
+            norm_transitions = {state['trans'][k].split(':')[0]:
+                {'1': '1.0',
+                 '0': '0.0'}.get(
+                     state['trans'][k+1],
+                     state['trans'][k+1]) for k in range(0, len(state['trans']), 2)}
+            if 'end' not in state.keys():
+                norm_transitions.update({'end': '1.0'})
+            else:
+                assert state['end'] == ['0']
+        else:
+            assert False
+
+
+        # transform emission information into GAP rules
+        nt_emissions = "emit_"
         emissions = None
         assert len(
             set(['only', 'tied_letter', 'letter']) & set(state.keys())) == 1
@@ -135,9 +159,8 @@ def model_to_grammar(states: dict) -> str:
             nt_emissions += name
             es = {x.split(':')[0]: x.split(':')[-1] for x in state['only']}
             assert abs(sum(map(float, es.values())) - 1) < 0.001
-            emissions = ' |\n      '.join(
-                ["only(CONST_FLOAT(%s), CHAR('%s'))" % (v, k)
-                 for k, v in es.items()])
+            emissions = ["    emission(CONST_FLOAT(%s), CHAR('%s'))" % (v, k)
+                         for k, v in es.items()]
         elif 'tied_letter' in state.keys():
             assert len(state['tied_letter']) == 1
             nt_emissions += state['tied_letter'][0]
@@ -146,45 +169,25 @@ def model_to_grammar(states: dict) -> str:
             nt_emissions = None
             emissions = None
 
-        assert 'trans' in state.keys()
-        nt_transitions = "transitions_%s" % name
-        transitions = None
-        if ':' in ''.join(state['trans']):
-            transitions = ['trans(CONST_FLOAT(%s), state_%s)' % (
-                {'1': '1.0',
-                 '0': '0.0'}.get(
-                    state['trans'][k+1],
-                    state['trans'][k+1]),
-                state['trans'][k].split(':')[0].strip())
-                for k in range(0, len(state['trans']), 2)]
-            if 'end' not in state.keys():
-                transitions.append("nil(EMPTY)")
+        # transform transition information into GAP production rules
+        code_transitions = []
+        for to_state, prob in norm_transitions.items():
+            if (emissions is None) and (nt_emissions is None):
+                if to_state == "end":
+                    code_transitions.append('    state_end')
+                else:
+                    code_transitions.append('    silent_transition(CONST_FLOAT(%s), state_%s)' % (prob, to_state))
             else:
-                assert state['end'] == ['0']
-            transitions = ' |\n      '.join(transitions)
-        else:
-            assert False
+                code_transitions.append('    transition(CONST_CHAR(\'%s\'), CONST_FLOAT(%s), %s, state_%s)' % (label, prob, nt_emissions, to_state))
 
-        gra += "  state_%s = " % name
-        if ((nt_emissions is not None)):
-            trans = [nt_transitions]
-            assert 'tied_trans' not in state.keys()
-            trans = trans[0]
-            gra += "step(CONST_CHAR('%s'), %s, %s)" % (
-                label, nt_emissions, trans)
-        else:
-            gra += "silent_step(%s)" % nt_transitions
-        gra += " # h;\n"
 
-        if (emissions is not None):
-            gra += "    %s =\n      %s\n      # h;\n" % (
-                nt_emissions, emissions)
-        if (transitions is not None):
-            gra += "    %s =\n      %s" % (nt_transitions, transitions)
-            if ':' in ''.join(state['trans']):
-                gra += "\n      # h"
-            gra += ";\n"
+        gra += '  state_%s =\n%s\n    # h;\n' % (name, ' |\n'.join(code_transitions))
+        if emissions is not None:
+            gra += '  emit_%s =\n%s\n    # h;\n' % (name, ' |\n'.join(emissions))
 
+        gra += "\n"
+
+    gra += '  state_end = nil(EMPTY) # h;\n'
     gra += "}\n"
 
     return gra
@@ -192,30 +195,26 @@ def model_to_grammar(states: dict) -> str:
 
 def generic_sig_algs() -> str:
     sig = "signature sig_tmhmm(alphabet, answer) {\n"
-    sig += "  answer silent_step(answer);\n"
-    sig += "  answer step(char, answer, answer);\n"
+    sig += "  answer silent_transition(float, answer);\n"
+    sig += "  answer transition(char, float, answer, answer);\n"
     sig += "  answer nil(void);\n"
-    sig += "  answer trans(float, answer);\n"
-    sig += "  answer only(float, alphabet);\n"
+    sig += "  answer emission(float, alphabet);\n"
     sig += "  choice [answer] h([answer]);\n"
     sig += "}\n"
 
     alg_viterbi = (
         "algebra alg_viterbi implements sig_tmhmm(alphabet=char, "
         "answer=float) {\n"
-        "  float silent_step(float x) {\n"
-        "    return x;\n"
+        "  float silent_transition(float prob, float t) {\n"
+        "    return prob * t;\n"
         "  }\n"
-        "  float step(char label, float e, float t) {\n"
-        "    return e*t;\n"
+        "  float transition(char label, float prob, float e, float t) {\n"
+        "    return prob * e * t;\n"
         "  }\n"
         "  float nil(void) {\n"
-        "    return 1;\n"
+        "    return 1.0;\n"
         "  }\n"
-        "  float trans(float prob, float x) {\n"
-        "    return prob * x;\n"
-        "  }\n"
-        "  float only(float prob, char emission) {\n"
+        "  float emission(float prob, char emission) {\n"
         "    return prob;\n"
         "  }\n"
         "  choice [float] h([float] candidates) {\n"
@@ -225,14 +224,17 @@ def generic_sig_algs() -> str:
 
     alg_viterbi_bit = (
         "algebra alg_viterbi_bit extends alg_viterbi {\n"
-        "  float step(char label, float e, float t) {\n"
-        "    return log(1.0/e) + t;\n"
+        "  float silent_transition(float prob, float t) {\n"
+        "    return log(1.0/prob) + t;\n"
+        "  }\n"
+        "  float transition(char label, float prob, float e, float t) {\n"
+        "    return log(1.0/prob) + e + t;\n"
         "  }\n"
         "  float nil(void) {\n"
         "    return 0.0;\n"
         "  }\n"
-        "  float trans(float prob, float x) {\n"
-        "    return log(1.0/prob) + x;\n"
+        "  float emission(float prob, char emission) {\n"
+        "    return log(1.0/prob);\n"
         "  }\n"
         "  choice [float] h([float] candidates) {\n"
         "    return list(minimum(candidates));\n"
@@ -243,10 +245,10 @@ def generic_sig_algs() -> str:
     alg_label = (
         "algebra alg_label implements sig_tmhmm(alphabet=char,"
         " answer=Rope) {\n"
-        "  Rope silent_step(Rope x) {\n"
+        "  Rope silent_transition(float prob, Rope x) {\n"
         "    return x;\n"
         "  }\n"
-        "  Rope step(char label, Rope e, Rope t) {\n"
+        "  Rope transition(char label, float prob, Rope e, Rope t) {\n"
         "    Rope res;\n"
         "    append(res, label);\n"
         "    append(res, t);\n"
@@ -256,10 +258,7 @@ def generic_sig_algs() -> str:
         "    Rope res;\n"
         "    return res;\n"
         "  }\n"
-        "  Rope trans(float prob, Rope x) {\n"
-        "    return x;\n"
-        "  }\n"
-        "  Rope only(float prob, char emission) {\n"
+        "  Rope emission(float prob, char emission) {\n"
         "    Rope res;\n"
         "    return res;\n"
         "  }\n"

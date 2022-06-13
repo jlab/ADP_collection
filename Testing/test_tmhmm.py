@@ -26,12 +26,15 @@ PREFIX_GAPC = '/'.join(PREFIX_GAPC.split('/')[:-2])
 
 class tmhmm(TestCase):
     def setUp(self):
+        self.DEBUG = False
+
         self.fp_model = "../TMHMM/TMHMM2.0.model"
         self.fp_truth_graph = "Truth/tmhmm_graph.dot"
         self.fp_truth_grammar = "Truth/tmhmm_grammar.gap"
         self.fp_truth_comps = "Truth/tmhmm_genericcomponents.gap"
         self.fp_tmpdir = tempfile.mkdtemp()
-        print("tmp dir is %s" % self.fp_tmpdir)
+        if self.DEBUG:
+            print("tmp dir is %s" % self.fp_tmpdir)
         self.seq_mini = "EKNWSALLTAVVIILTIAG"
         self.seq_example = (
             "MEILCEDNTSLSSIPNSLMQVDGDSGLYRNDFNSRDANSSDASNWTIDGENRTNLSFEGYLPPT"
@@ -44,7 +47,8 @@ class tmhmm(TestCase):
             "GKQQSEETCTDNINTVNEKVSCV")
 
     def tearDown(self):
-        print("delete %s" % self.fp_tmpdir)
+        if self.DEBUG:
+            print("delete %s" % self.fp_tmpdir)
         shutil.rmtree(self.fp_tmpdir)
 
     def test_graphviz(self):
@@ -76,7 +80,7 @@ class tmhmm(TestCase):
         fp_code = os.path.join(self.fp_tmpdir, "tmhmm.gap")
         generate_gapc(self.fp_model, fp_code)
 
-        cmd_gapc = 'cd %s && gapc -p "alg_viterbi_bit" %s' % (
+        cmd_gapc = 'cd %s && gapc -p "(alg_viterbi_bit %% alg_viterbi)" %s' % (
             self.fp_tmpdir, fp_code)
         result_gapc = run_cmd(cmd_gapc)
         self.assertEqual(result_gapc, [""])
@@ -87,29 +91,32 @@ class tmhmm(TestCase):
 
         cmd_binary = 'cd %s && ./out %s' % (self.fp_tmpdir, self.seq_mini)
         result_binary = run_cmd(cmd_binary)
-        obs = float(result_binary[-1])
+        obs = result_binary[-1].strip()
 
         # cmp with tmhmm-2.0c/bin>./decodeanhmm.Linux_x86_64 \
         # ../lib/TMHMM2.0.model ../testcase1.fasta -optionfile \
         # ../lib/TMHMM2.0.options -viterbi -PrintPred -PrintSeq -PrintTag \
         # -PrintScore -PrintStat -PrintNumbers -nonormalize -nobits -plp
         # line: %score Viterbi 56.430404 (2.970021 per character)
-        exp = 56.4304
+        exp = "( 56.4304 , 3.10876e-25 )"
         self.assertEqual(exp, obs)
 
         cmd_binary = 'cd %s && ./out %s' % (self.fp_tmpdir, self.seq_example)
         result_binary = run_cmd(cmd_binary)
-        obs = float(result_binary[-1])
+        obs = result_binary[-1].strip()
 
         # %score Viterbi 1348.784605 (2.863662 per character)
-        exp = 1348.78
+        # due to numeric instability, raw prob is rounded to 0, that's why we
+        # need bits or logspace for real inputs
+        exp = "( 1348.78 , 0 )"
         self.assertEqual(exp, obs)
 
     def test_generate_gapc_label(self):
         fp_code = os.path.join(self.fp_tmpdir, "tmhmm.gap")
         generate_gapc(self.fp_model, fp_code)
 
-        cmd_gapc = 'cd %s && gapc -p "alg_viterbi_bit * alg_label" %s' % (
+        cmd_gapc = ('cd %s && gapc -p "(alg_viterbi_bit %% alg_viterbi) '
+                    '* alg_label" %s') % (
             self.fp_tmpdir, fp_code)
         result_gapc = run_cmd(cmd_gapc)
         self.assertEqual(result_gapc, [""])
