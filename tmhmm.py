@@ -242,6 +242,14 @@ def generic_sig_algs() -> str:
         "}\n"
     )
 
+    alg_fwd_bit = (
+        "algebra alg_fwd_bit extends alg_viterbi_bit {\n"
+        "  synoptic choice [float] h([float] candidates) {\n"
+        "    return list(negexpsum(candidates));\n"
+        "  }\n"
+        "}\n"
+    )
+
     alg_label = (
         "algebra alg_label implements sig_tmhmm(alphabet=char,"
         " answer=Rope) {\n"
@@ -268,7 +276,7 @@ def generic_sig_algs() -> str:
         "}\n"
     )
 
-    return [sig, alg_viterbi, alg_viterbi_bit, alg_label]
+    return [sig, alg_viterbi, alg_viterbi_bit, alg_fwd_bit, alg_label]
 
 
 def generate_gapc(fp_model: str, fp_output: str):
@@ -280,6 +288,7 @@ def generate_gapc(fp_model: str, fp_output: str):
     algs = comps
 
     with open(fp_output, 'w') as f:
+        f.write("import \"ext_tmhmm.hh\"\n")
         f.write("type Rope = extern\n\n")
         f.write(sig+"\n")
         f.write('algebra alg_enum auto enum;\n\n')
