@@ -2,6 +2,7 @@ import "ext_alignment.hh"
 
 input <raw, raw>
 type Rope = extern
+type dual = (float v, float vdot)
 type typ_ali = (Rope first, Rope second)
 
 signature sig_alignments(alphabet, answer) {
@@ -25,20 +26,20 @@ algebra alg_count auto count;
 
 algebra alg_similarity implements sig_alignments(alphabet=char, answer=int) {
   int Ins(<alphabet a, void>, int x) {
-    return x -2;
+    return x +1;
   }
   int Del(<void, alphabet b>, int x) {
-    return x -2;
+    return x +1;
   }
   int Ers(<alphabet a, alphabet b>, int x) {
     if (a == b) {
-      return x +1;
+      return x +10;
     } else {
-      return x -1;
+      return x +5;
     }
   }
   int Sto(<void, void>) {
-    return 0;
+    return 1;
   }
 	
   int Region(<Rope aleft, void>, int x, <Rope aright, void>) {
@@ -62,6 +63,108 @@ algebra alg_similarity implements sig_alignments(alphabet=char, answer=int) {
 
   choice [int] h([int] candidates) {
     return list(maximum(candidates));
+  }
+}
+algebra alg_forward extends alg_similarity {
+  choice [int] h([int] candidates) {
+    return list(expsum(candidates));
+  }
+}
+
+algebra alg_expsimilarity implements sig_alignments(alphabet=char, answer=float) {
+  float Ins(<alphabet a, void>, float x) {
+    return x * exp(-2.0);
+  }
+  float Del(<void, alphabet b>, float x) {
+    return x * exp(-2.0);
+  }
+  float Ers(<alphabet a, alphabet b>, float x) {
+    if (a == b) {
+      return x * exp(2.0);
+    } else {
+      return x * exp(1.0);
+    }
+  }
+  float Sto(<void, void>) {
+    return exp(0.0);
+  }
+	
+  float Region(<Rope aleft, void>, float x, <Rope aright, void>) {
+    return x;
+  }
+  float Region_Pr(<Rope aleft, void>, float x, <void, Rope bright>) {
+    return x;
+  }
+  float Region_Pr_Pr(<void, Rope bleft>, float x, <void, Rope bright>) {
+    return x;
+  }
+	
+  // this is slightly different form http://rna.informatik.uni-freiburg.de/Teaching/index.jsp?toolName=Gotoh#
+  // as there Ins + Insx is computed for first blank, we here score Ins for first blank and Insx for all following ones
+  float Insx(<alphabet a, void>, float x) {
+    return x -1;
+  }
+  float Delx(<void, alphabet b>, float x) {
+    return x -1;
+  }
+
+  choice [float] h([float] candidates) {
+    return list(sum(candidates));
+  }
+}
+
+algebra alg_hessians implements sig_alignments(alphabet=char, answer=dual) {
+  dual Ins(<alphabet a, void>, dual x) {
+    dual res;
+    res.v = x.v - 2.0;
+    res.vdot = x.vdot - 2.0;
+    return res;
+  }
+  dual Del(<void, alphabet b>, dual x) {
+    dual res;
+    res.v = x.v - 2.0;
+    res.vdot = x.vdot - 2.0;
+    return res;
+  }
+  dual Ers(<alphabet a, alphabet b>, dual x) {
+    dual res;
+    if (a == b) {
+      res.v = x.v + 2.0;
+      res.vdot = x.vdot + 2.0;
+    } else {
+      res.v = x.v + 1.0; 
+      res.vdot = x.vdot + 1.0; 
+    }
+    return res;
+  }
+  dual Sto(<void, void>) {
+    dual res;
+    res.v = 0.0;
+    res.vdot = 0.0;
+    return res;
+  }
+	
+  dual Region(<Rope aleft, void>, dual x, <Rope aright, void>) {
+    return x;
+  }
+  dual Region_Pr(<Rope aleft, void>, dual x, <void, Rope bright>) {
+    return x;
+  }
+  dual Region_Pr_Pr(<void, Rope bleft>, dual x, <void, Rope bright>) {
+    return x;
+  }
+	
+  // this is slightly different form http://rna.informatik.uni-freiburg.de/Teaching/index.jsp?toolName=Gotoh#
+  // as there Ins + Insx is computed for first blank, we here score Ins for first blank and Insx for all following ones
+  dual Insx(<alphabet a, void>, dual x) {
+    return x;
+  }
+  dual Delx(<void, alphabet b>, dual x) {
+    return x;
+  }
+
+  synoptic choice [dual] h([dual] candidates) {
+    return combH(candidates);
   }
 }
 
@@ -320,6 +423,11 @@ grammar gra_needlemanwunsch uses sig_alignments(axiom=A) {
     | Sto(<EMPTY, EMPTY>)
     # h;
 }
+grammar gra_simple uses sig_alignments(axiom=A) {
+  A = Ers(<CHAR, CHAR>, A)
+    | Sto(<EMPTY, EMPTY>)
+    # h;
+}
 
 /* a grammar that enumerates all traces but not all alignments
    difference:  X-   and  -X   are two different alignments, but the same trace
@@ -434,3 +542,11 @@ instance ins_trace_similarity = gra_traces(alg_similarity);
 instance ins_needlemanwunsch_similarity = gra_needlemanwunsch(alg_similarity);
 
 instance ins_nweditopscount = gra_needlemanwunsch(alg_editops * alg_count);
+instance stefan = gra_needlemanwunsch(alg_enum);
+instance stefan2 = gra_needlemanwunsch(alg_enum * (alg_similarity * alg_expsimilarity));
+
+instance deepADP = gra_needlemanwunsch(alg_expsimilarity);
+instance deepADP_simple = gra_simple(alg_expsimilarity);
+instance hessians = gra_needlemanwunsch(alg_hessians);
+
+instance fwd = gra_needlemanwunsch(alg_forward);
