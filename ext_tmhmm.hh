@@ -17,10 +17,12 @@ typename std::iterator_traits<Itr>::value_type negexpsum(Itr begin, Itr end) {
   }
   assert(!isEmpty(*begin));
   n = exp(-1 * (*begin));
+  assert((n > std::numeric_limits<double>::min()) && "Underflow in negexsum while computing exp()!");
   ++begin;
   for (; begin != end; ++begin) {
     assert(!isEmpty(*begin));
     n += exp(-1 * (*begin));
+    assert((n > std::numeric_limits<double>::min()) && "Underflow in negexsum while computing exp()!");
   }
   return log(1/n);
 }
