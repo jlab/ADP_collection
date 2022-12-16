@@ -33,7 +33,6 @@ class tmhmm(TestCase):
         self.fp_truth_grammar = "Truth/tmhmm_grammar.gap"
         self.fp_truth_comps = "Truth/tmhmm_genericcomponents.gap"
         self.fp_tmpdir = tempfile.mkdtemp()
-        shutil.copyfile("../ext_tmhmm.hh", self.fp_tmpdir+"/ext_tmhmm.hh")
         if self.DEBUG:
             print("tmp dir is %s" % self.fp_tmpdir)
         self.seq_mini = "EKNWSALLTAVVIILTIAG"
@@ -153,34 +152,6 @@ class tmhmm(TestCase):
                "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii")
         self.assertEqual(exp, obs)
 
-    def test_gapc_fwd(self):
-        fp_code = os.path.join(self.fp_tmpdir, "tmhmm.gap")
-        generate_gapc(self.fp_model, fp_code)
-
-        cmd_gapc = ('cd %s && gapc -p "alg_fwd_bit" %s') % (
-            self.fp_tmpdir, fp_code)
-        result_gapc = run_cmd(cmd_gapc)
-        self.assertEqual(result_gapc, [""])
-
-        cmd_make = 'cd %s && make -f out.mf' % (self.fp_tmpdir)
-        result_make = run_cmd(cmd_make)
-        self.assertEqual(len(result_make), 7)
-
-        cmd_binary = 'cd %s && ./out %s' % (self.fp_tmpdir, self.seq_mini)
-        result_binary = run_cmd(cmd_binary)
-        obs = result_binary[-1]
-        # compare with line "%score FW 55.451140 (2.918481 per character)"
-        # from program TMHMM
-        exp = "55.4511"
-        self.assertEqual(exp, obs)
-
-        cmd_binary = 'cd %s && ./out %s' % (self.fp_tmpdir, self.seq_example)
-        result_binary = run_cmd(cmd_binary)
-        obs = result_binary[-1]
-        # compare with line "%score FW 1344.372166 (2.854293 per character)"
-        # from program TMHMM
-        exp = "1344.3722"
-        self.assertEqual(exp, obs)
 
 if __name__ == '__main__':
     main()

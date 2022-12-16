@@ -105,7 +105,7 @@ def model_to_graphviz(states: dict) -> str:
     return out
 
 
-def model_to_grammar(states: dict) -> str:
+def model_to_grammar(states: dict) -> (str, dict):
     """Translates model into ADP grammar.
 
     Parameters
@@ -118,6 +118,7 @@ def model_to_grammar(states: dict) -> str:
     String containing source code for grammar component of ADP source code.
     """
     gra = "grammar gra_tmhmm uses sig_tmhmm(axiom = state_begin) {\n"
+    map_state_label = dict()
     for name, state in states.items():
         # skip the header "state", which defined the alphabet
         if (name == 'header'):
@@ -130,6 +131,7 @@ def model_to_grammar(states: dict) -> str:
         if 'label' in state.keys():
             assert len(state['label']) == 1
             label = state['label'][0]
+        map_state_label['state_%s' % name] = label
 
         # normalize transitions
         # - from 'a:', 'b', 'c:', 'd' build dict {'a': 'b', 'c': 'd'}
@@ -190,7 +192,7 @@ def model_to_grammar(states: dict) -> str:
     gra += '  state_end = nil(EMPTY) # h;\n'
     gra += "}\n"
 
-    return gra
+    return (gra, map_state_label)
 
 
 def generic_sig_algs() -> str:
@@ -242,14 +244,6 @@ def generic_sig_algs() -> str:
         "}\n"
     )
 
-    alg_fwd_bit = (
-        "algebra alg_fwd_bit extends alg_viterbi_bit {\n"
-        "  synoptic choice [float] h([float] candidates) {\n"
-        "    return list(negexpsum(candidates));\n"
-        "  }\n"
-        "}\n"
-    )
-
     alg_label = (
         "algebra alg_label implements sig_tmhmm(alphabet=char,"
         " answer=Rope) {\n"
@@ -276,7 +270,7 @@ def generic_sig_algs() -> str:
         "}\n"
     )
 
-    return [sig, alg_viterbi, alg_viterbi_bit, alg_fwd_bit, alg_label]
+    return [sig, alg_viterbi, alg_viterbi_bit, alg_label]
 
 
 def generate_gapc(fp_model: str, fp_output: str):
@@ -288,7 +282,6 @@ def generate_gapc(fp_model: str, fp_output: str):
     algs = comps
 
     with open(fp_output, 'w') as f:
-        f.write("import \"ext_tmhmm.hh\"\n")
         f.write("type Rope = extern\n\n")
         f.write(sig+"\n")
         f.write('algebra alg_enum auto enum;\n\n')
