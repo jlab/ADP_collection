@@ -105,7 +105,7 @@ def model_to_graphviz(states: dict) -> str:
     return out
 
 
-def model_to_grammar(states: dict) -> (str, dict):
+def model_to_grammar(states: dict) -> str:
     """Translates model into ADP grammar.
 
     Parameters
@@ -118,7 +118,6 @@ def model_to_grammar(states: dict) -> (str, dict):
     String containing source code for grammar component of ADP source code.
     """
     gra = "grammar gra_tmhmm uses sig_tmhmm(axiom = state_begin) {\n"
-    map_state_label = dict()
     for name, state in states.items():
         # skip the header "state", which defined the alphabet
         if (name == 'header'):
@@ -131,7 +130,6 @@ def model_to_grammar(states: dict) -> (str, dict):
         if 'label' in state.keys():
             assert len(state['label']) == 1
             label = state['label'][0]
-        map_state_label['state_%s' % name] = label
 
         # normalize transitions
         # - from 'a:', 'b', 'c:', 'd' build dict {'a': 'b', 'c': 'd'}
@@ -192,7 +190,7 @@ def model_to_grammar(states: dict) -> (str, dict):
     gra += '  state_end = nil(EMPTY) # h;\n'
     gra += "}\n"
 
-    return (gra, map_state_label)
+    return gra
 
 
 def generic_sig_algs() -> str:
