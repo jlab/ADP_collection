@@ -156,28 +156,47 @@ class binarysearchtree(TestCase):
 class hmm(TestCase):
     def setUp(self):
         self.TRANSITIONS = {
-            ('start', 'hoch'): 0.5,
-            ('start', 'tief'): 0.5,
-            ('hoch', 'hoch'): 0.7,
-            ('hoch', 'tief'): 0.3,
-            ('tief', 'tief'): 0.6,
-            ('tief', 'hoch'): 0.4}
+            ('start', 'start'): 0,
+            ('start', 'hoch'): 0.49,
+            ('start', 'tief'): 0.49,
+            ('start', 'ende'): 0.02,
 
+            ('hoch', 'start'): 0,
+            ('hoch', 'hoch'): 0.69,
+            ('hoch', 'tief'): 0.29,
+            ('hoch', 'ende'): 0.02,
+
+            ('tief', 'start'): 0,
+            ('tief', 'tief'): 0.59,
+            ('tief', 'hoch'): 0.39,
+            ('tief', 'ende'): 0.02,
+
+            ('ende', 'start'): 0,
+            ('ende', 'hoch'): 0,
+            ('ende', 'tief'): 0,
+            ('ende', 'ende'): 1,
+            }
         self.EMISSIONS = {
             ('hoch', 'sonne'): 0.8,
             ('hoch', 'regen'): 0.2,
             ('tief', 'sonne'): 0.1,
-            ('tief', 'regen'): 0.9,
-            ('start', 'ε'): 1.0,
-            ('start', 'ε'): 1.0}
+            ('tief', 'regen'): 0.9}
 
         self.casino_transitions = {
-            ('fair','fair'): 0.95,
+            ('fair','fair'): 0.94,
             ('fair', 'loaded'): 0.05,
-            ('loaded', 'loaded'): 0.9,
+            ('fair', 'end'): 0.01,
+            ('loaded', 'loaded'): 0.89,
             ('loaded', 'fair'): 0.1,
-            ('start', 'loaded'): 0.5,
-            ('start', 'fair'): 0.5}
+            ('loaded', 'end'): 0.01,
+            ('start', 'loaded'): 0.49,
+            ('start', 'fair'): 0.49,
+            ('start', 'end'): 0.02,
+            ('end', 'start'): 0.0,
+            ('end', 'fair'): 0.0,
+            ('end', 'loaded'): 0.0,
+            ('end', 'end'): 1.0,
+            }
         self.casino_emissions = {
             ('fair', 1): 1/6,
             ('fair', 2): 1/6,
@@ -194,12 +213,20 @@ class hmm(TestCase):
             ('start', 'ε'): 1.0}
 
         self.cpg_transitions = {
-            ('rich','rich'): 0.63,
-            ('rich', 'poor'): 0.37,
-            ('poor', 'poor'): 0.63,
-            ('poor', 'rich'): 0.37,
-            ('start', 'poor'): 0.5,
-            ('start', 'rich'): 0.5}
+            ('rich','rich'): 0.62,
+            ('rich', 'poor'): 0.36,
+            ('rich', 'end'): 0.02,
+            ('poor', 'poor'): 0.62,
+            ('poor', 'rich'): 0.36,
+            ('poor', 'end'): 0.02,
+            ('start', 'poor'): 0.49,
+            ('start', 'rich'): 0.49,
+            ('start', 'end'): 0.02,
+            ('end', 'start'): 0.0,
+            ('end', 'rich'): 0.0,
+            ('end', 'poor'): 0.0,
+            ('end', 'end'): 1.0,
+            }
         self.cpg_emissions = {
             ('rich', 'A'): 0.13,
             ('rich', 'C'): 0.37,
@@ -221,7 +248,17 @@ class hmm(TestCase):
     def test_hmm_sonneregen(self):
         inp = ["sonne", "sonne", "regen", "regen"]
 
-        exp = 0.0326592
+        with self.assertRaises(ValueError):
+            trans_err = self.TRANSITIONS.copy()
+            trans_err.update({('hoch','tief'): 0.5})
+            viterbi(inp, "start", trans_err, self.EMISSIONS)
+
+        with self.assertRaises(ValueError):
+            emit_err = self.EMISSIONS.copy()
+            emit_err.update({('hoch','sonne'): 0.01})
+            viterbi(inp, "start", self.TRANSITIONS, emit_err)
+
+        exp = 0.000599777
         obs = viterbi(inp, "start", self.TRANSITIONS, self.EMISSIONS)
         self.assertAlmostEqual(exp, obs)
 
@@ -236,7 +273,7 @@ class hmm(TestCase):
             emissions.update({('falsch', 'sonne'): 0.9})
             viterbi(inp, "start", self.TRANSITIONS, emissions)
 
-        exp = 0.059466
+        exp = 0.0010927
         obs = forward(inp, "start", self.TRANSITIONS, self.EMISSIONS)
         self.assertAlmostEqual(exp, obs)
 
@@ -246,7 +283,7 @@ class hmm(TestCase):
     def test_hmm_casino(self):
         inp = [1,5,6,2,6]
 
-        exp = 8.20125e-05
+        exp = 7.68592e-07
         obs = viterbi(inp, "start", self.casino_transitions, self.casino_emissions)
         self.assertAlmostEqual(exp, obs)
 
@@ -254,7 +291,7 @@ class hmm(TestCase):
         self.assertAlmostEqual(obs, float(obs_gap))
 
 
-        exp = 0.000187711
+        exp = 1.76701e-06
         obs = forward(inp, "start", self.casino_transitions, self.casino_emissions)
         self.assertAlmostEqual(exp, obs)
 
@@ -262,19 +299,19 @@ class hmm(TestCase):
         self.assertAlmostEqual(obs, float(obs_gap))
 
     def test_hmm_cpg(self):
-        exp = 4.4896241716888033e-72
+        exp = 1.55659e-74
         obs = viterbi(self.cpg_input, "start", self.cpg_transitions, self.cpg_emissions)
-        self.assertAlmostEqual(exp, obs)
+        self.assertAlmostEqual(exp, obs, delta=10**-80)
 
         obs_gap = _get_gapc_answer('%s/hmm_cpg.viterbistatesmult.foo.out' % PREFIX_GAPC_TRUTH)
-        self.assertAlmostEqual(obs, float(obs_gap))
+        self.assertAlmostEqual(obs, float(obs_gap), delta=10**-80)
 
-        exp = 3.559918247841254e-60
+        exp = 9.78312e-63
         obs = forward(self.cpg_input, "start", self.cpg_transitions, self.cpg_emissions)
-        self.assertAlmostEqual(exp, obs)
+        self.assertAlmostEqual(exp, obs, delta=10**-66)
 
         obs_gap = _get_gapc_answer('%s/hmm_cpg.fwd.foo.out' % PREFIX_GAPC_TRUTH)
-        self.assertAlmostEqual(obs, float(obs_gap))
+        self.assertAlmostEqual(obs, float(obs_gap), delta=10**-66)
 
 class align(TestCase):
     def setUp(self):

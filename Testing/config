@@ -50,6 +50,8 @@ check_new_old_eq hmm_cpg.gap hmm viterbistatesmult "GCGGCCGATATACTACAGTTGGCTTGAA
 check_new_old_eq hmm_cpg.gap hmm fwd "GCGGCCGATATACTACAGTTGGCTTGAATGAACCAGGCCCGGCGCGGACAACCTGGGCCCCGGCGGTCGCCCATACCGCAATGGGAGCCGTTAACTCGCT" foo
 check_new_old_eq hmm_cpg.gap hmm multviterbistates "GCGGCCGA" foo
 
+check_new_old_eq hmm_transmembrane.gap hmm test "GCGGCCGA" foo
+
 ############ sequence alignments
 check_new_old_eqTwoTrack alignments.gap nw ins_needlemanwunsch_count "FREIZEIT" "ZEITGEIST" foo
 check_new_old_eqTwoTrack alignments.gap nw ins_traces_count "FREIZEIT" "ZEITGEIST" foo

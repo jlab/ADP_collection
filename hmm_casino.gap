@@ -7,6 +7,9 @@ signature sig_casino(alphabet, answer) {
   answer transition_fair_loaded(float, answer, answer);
   answer transition_loaded_fair(float, answer, answer);
   answer transition_loaded_loaded(float, answer, answer);
+  answer transition_start_end(float, answer);
+  answer transition_fair_end(float, answer);
+  answer transition_loaded_end(float, answer);
   
   answer emission_fair_1(float, alphabet);
   answer emission_fair_2(float, alphabet);
@@ -35,17 +38,26 @@ algebra alg_viterbi implements sig_casino(alphabet=char, answer=float) {
   float transition_start_loaded(float transition, float emission, float x) {
     return transition * emission * x;
   }
+  float transition_start_end(float transition, float x) {
+    return transition * x;
+  }
   float transition_fair_loaded(float transition, float emission, float x) {
     return transition * emission * x;
   }
   float transition_fair_fair(float transition, float emission, float x) {
     return transition * emission * x;
   }
+  float transition_fair_end(float transition, float x) {
+    return transition * x;
+  }
   float transition_loaded_loaded(float transition, float emission, float x) {
     return transition * emission * x;
   }
   float transition_loaded_fair(float transition, float emission, float x) {
     return transition * emission * x;
+  }
+  float transition_loaded_end(float transition, float x) {
+    return transition * x;
   }
   
   float emission_fair_1(float emission, char a) {
@@ -101,13 +113,21 @@ algebra alg_fwd extends alg_viterbi {
 algebra alg_states implements sig_casino(alphabet=char, answer=Rope) {
   Rope transition_start_fair(float transition, Rope emission, Rope x) {
     Rope res;
+    append(res, '^');
     append(res, 'F');
     append(res, x);
     return res;
   }
   Rope transition_start_loaded(float transition, Rope emission, Rope x) {
     Rope res;
+    append(res, '^');
     append(res, 'L');
+    append(res, x);
+    return res;
+  }
+  Rope transition_start_end(float transition, Rope x) {
+    Rope res;
+    append(res, '^');
     append(res, x);
     return res;
   }
@@ -123,6 +143,11 @@ algebra alg_states implements sig_casino(alphabet=char, answer=Rope) {
     append(res, x);
     return res;
   }
+  Rope transition_fair_end(float transition, Rope x) {
+    Rope res;
+    append(res, x);
+    return res;
+  }
   Rope transition_loaded_loaded(float transition, Rope emission, Rope x) {
     Rope res;
     append(res, 'L');
@@ -132,6 +157,11 @@ algebra alg_states implements sig_casino(alphabet=char, answer=Rope) {
   Rope transition_loaded_fair(float transition, Rope emission, Rope x) {
     Rope res;
     append(res, 'F');
+    append(res, x);
+    return res;
+  }
+  Rope transition_loaded_end(float transition, Rope x) {
+    Rope res;
     append(res, x);
     return res;
   }
@@ -187,6 +217,7 @@ algebra alg_states implements sig_casino(alphabet=char, answer=Rope) {
 
   Rope nil(void) {
     Rope res;
+    append(res, '$');
     return res;
   }
   choice [Rope] h([Rope] candidates) {
@@ -213,6 +244,13 @@ algebra alg_mult implements sig_casino(alphabet=char, answer=Rope) {
     append(res, x);
     return res;
   }
+  Rope transition_start_end(float transition, Rope x) {
+    Rope res;
+    append(res, transition);
+    append(res, '*');
+    append(res, x);
+    return res;
+  }
   Rope transition_fair_loaded(float transition, Rope emission, Rope x) {
     Rope res;
     append(res, transition);
@@ -231,6 +269,13 @@ algebra alg_mult implements sig_casino(alphabet=char, answer=Rope) {
     append(res, x);
     return res;
   }
+  Rope transition_fair_end(float transition, Rope x) {
+    Rope res;
+    append(res, transition);
+    append(res, '*');
+    append(res, x);
+    return res;
+  }
   Rope transition_loaded_loaded(float transition, Rope emission, Rope x) {
     Rope res;
     append(res, transition);
@@ -245,6 +290,13 @@ algebra alg_mult implements sig_casino(alphabet=char, answer=Rope) {
     append(res, transition);
     append(res, '*');
     append(res, emission);
+    append(res, '*');
+    append(res, x);
+    return res;
+  }
+  Rope transition_loaded_end(float transition, Rope x) {
+    Rope res;
+    append(res, transition);
     append(res, '*');
     append(res, x);
     return res;
@@ -322,19 +374,23 @@ algebra alg_mult implements sig_casino(alphabet=char, answer=Rope) {
 
 
 grammar gra_casino uses sig_casino(axiom=start) {
-  start = transition_start_fair(CONST_FLOAT(0.5), fair_emission, fair)
-        | transition_start_loaded(CONST_FLOAT(0.5), loaded_emission, loaded)
-        # h;
+  start  = transition_start_fair(CONST_FLOAT(0.49), fair_emission, fair)
+         | transition_start_loaded(CONST_FLOAT(0.49), loaded_emission, loaded)
+         | transition_start_end(CONST_FLOAT(0.02), end)
+         # h;
 
-  fair  = transition_fair_fair(CONST_FLOAT(0.95), fair_emission, fair)
-        | transition_fair_loaded(CONST_FLOAT(0.05), loaded_emission, loaded)
-	| nil(EMPTY)
-        # h;
+  fair   = transition_fair_fair(CONST_FLOAT(0.94), fair_emission, fair)
+         | transition_fair_loaded(CONST_FLOAT(0.05), loaded_emission, loaded)
+	 | transition_fair_end(CONST_FLOAT(0.01), end)
+         # h;
 	
-  loaded  = transition_loaded_loaded(CONST_FLOAT(0.9), loaded_emission, loaded)
-        | transition_loaded_fair(CONST_FLOAT(0.1), fair_emission, fair)
-	| nil(EMPTY)
-        # h;
+  loaded = transition_loaded_loaded(CONST_FLOAT(0.89), loaded_emission, loaded)
+         | transition_loaded_fair(CONST_FLOAT(0.1), fair_emission, fair)
+	 | transition_loaded_end(CONST_FLOAT(0.01), end)
+         # h;
+        
+  end =  nil(EMPTY)
+         # h;
 	
   fair_emission = emission_fair_1(CONST_FLOAT(0.166666667), CHAR('1'))
 		| emission_fair_2(CONST_FLOAT(0.166666667), CHAR('2'))

@@ -3,10 +3,13 @@ type Rope = extern
 signature sig_cpg(alphabet, answer) {
   answer transition_start_rich(float, answer, answer);
   answer transition_start_poor(float, answer, answer);
+  answer transition_start_end(float, answer);
   answer transition_rich_rich(float, answer, answer);
   answer transition_rich_poor(float, answer, answer);
+  answer transition_rich_end(float, answer);
   answer transition_poor_rich(float, answer, answer);
   answer transition_poor_poor(float, answer, answer);
+  answer transition_poor_end(float, answer);
   
   answer emission_rich_A(float, alphabet);
   answer emission_rich_C(float, alphabet);
@@ -31,17 +34,26 @@ algebra alg_viterbi implements sig_cpg(alphabet=char, answer=float) {
   float transition_start_poor(float transition, float emission, float x) {
     return transition * emission * x;
   }
+  float transition_start_end(float transition, float x) {
+    return transition * x;
+  }
   float transition_rich_poor(float transition, float emission, float x) {
     return transition * emission * x;
   }
   float transition_rich_rich(float transition, float emission, float x) {
     return transition * emission * x;
   }
+  float transition_rich_end(float transition, float x) {
+    return transition * x;
+  }
   float transition_poor_poor(float transition, float emission, float x) {
     return transition * emission * x;
   }
   float transition_poor_rich(float transition, float emission, float x) {
     return transition * emission * x;
+  }
+  float transition_poor_end(float transition, float x) {
+    return transition * x;
   }
   
   float emission_rich_A(float emission, char a) {
@@ -84,13 +96,21 @@ algebra alg_fwd extends alg_viterbi {
 algebra alg_states implements sig_cpg(alphabet=char, answer=Rope) {
   Rope transition_start_rich(float transition, Rope emission, Rope x) {
     Rope res;
+    append(res, '^');
     append(res, 'H');
     append(res, x);
     return res;
   }
   Rope transition_start_poor(float transition, Rope emission, Rope x) {
     Rope res;
+    append(res, '^');
     append(res, 'L');
+    append(res, x);
+    return res;
+  }
+  Rope transition_start_end(float transition, Rope x) {
+    Rope res;
+    append(res, '^');
     append(res, x);
     return res;
   }
@@ -106,6 +126,11 @@ algebra alg_states implements sig_cpg(alphabet=char, answer=Rope) {
     append(res, x);
     return res;
   }
+  Rope transition_rich_end(float transition, Rope x) {
+    Rope res;
+    append(res, x);
+    return res;
+  }
   Rope transition_poor_poor(float transition, Rope emission, Rope x) {
     Rope res;
     append(res, 'L');
@@ -115,6 +140,11 @@ algebra alg_states implements sig_cpg(alphabet=char, answer=Rope) {
   Rope transition_poor_rich(float transition, Rope emission, Rope x) {
     Rope res;
     append(res, 'H');
+    append(res, x);
+    return res;
+  }
+  Rope transition_poor_end(float transition, Rope x) {
+    Rope res;
     append(res, x);
     return res;
   }
@@ -154,6 +184,7 @@ algebra alg_states implements sig_cpg(alphabet=char, answer=Rope) {
 
   Rope nil(void) {
     Rope res;
+    append(res, '$');
     return res;
   }
   choice [Rope] h([Rope] candidates) {
@@ -180,6 +211,13 @@ algebra alg_mult implements sig_cpg(alphabet=char, answer=Rope) {
     append(res, x);
     return res;
   }
+  Rope transition_start_end(float transition, Rope x) {
+    Rope res;
+    append(res, transition);
+    append(res, " * ", 3);
+    append(res, x);
+    return res;
+  }
   Rope transition_rich_poor(float transition, Rope emission, Rope x) {
     Rope res;
     append(res, transition);
@@ -198,6 +236,13 @@ algebra alg_mult implements sig_cpg(alphabet=char, answer=Rope) {
     append(res, x);
     return res;
   }
+  Rope transition_rich_end(float transition, Rope x) {
+    Rope res;
+    append(res, transition);
+    append(res, " * ", 3);
+    append(res, x);
+    return res;
+  }
   Rope transition_poor_poor(float transition, Rope emission, Rope x) {
     Rope res;
     append(res, transition);
@@ -212,6 +257,13 @@ algebra alg_mult implements sig_cpg(alphabet=char, answer=Rope) {
     append(res, transition);
     append(res, " * ", 3);
     append(res, emission);
+    append(res, " * ", 3);
+    append(res, x);
+    return res;
+  }
+  Rope transition_poor_end(float transition, Rope x) {
+    Rope res;
+    append(res, transition);
     append(res, " * ", 3);
     append(res, x);
     return res;
@@ -269,19 +321,23 @@ algebra alg_mult implements sig_cpg(alphabet=char, answer=Rope) {
 
 
 grammar gra_cpg uses sig_cpg(axiom=start) {
-  start = transition_start_rich(CONST_FLOAT(0.5), rich_emission, rich)
-        | transition_start_poor(CONST_FLOAT(0.5), poor_emission, poor)
+  start = transition_start_rich(CONST_FLOAT(0.49), rich_emission, rich)
+        | transition_start_poor(CONST_FLOAT(0.49), poor_emission, poor)
+        | transition_start_end(CONST_FLOAT(0.02), end)
         # h;
 
-  rich  = transition_rich_rich(CONST_FLOAT(0.63), rich_emission, rich)
-        | transition_rich_poor(CONST_FLOAT(0.37), poor_emission, poor)
-	| nil(EMPTY)
+  rich  = transition_rich_rich(CONST_FLOAT(0.62), rich_emission, rich)
+        | transition_rich_poor(CONST_FLOAT(0.36), poor_emission, poor)
+	| transition_rich_end(CONST_FLOAT(0.02), end)
         # h;
 	
-  poor  = transition_poor_poor(CONST_FLOAT(0.63), poor_emission, poor)
-        | transition_poor_rich(CONST_FLOAT(0.37), rich_emission, rich)
-	| nil(EMPTY)
+  poor  = transition_poor_poor(CONST_FLOAT(0.62), poor_emission, poor)
+        | transition_poor_rich(CONST_FLOAT(0.36), rich_emission, rich)
+	| transition_poor_end(CONST_FLOAT(0.02), end)
         # h;
+        
+  end = nil(EMPTY)
+      # h;
 	
   rich_emission = emission_rich_A(CONST_FLOAT(0.13), CHAR('A'))
 		| emission_rich_C(CONST_FLOAT(0.37), CHAR('C'))

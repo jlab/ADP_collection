@@ -2,6 +2,7 @@ type Rope = extern
 
 signature sig_dinuc(alphabet, answer) {
   answer transition(float, alphabet, answer);
+  answer transitionend(float, answer);
   answer nil(void);
   choice [answer] h([answer]);
 }
@@ -11,6 +12,9 @@ algebra alg_count auto count;
 
 algebra alg_prob implements sig_dinuc(alphabet=char, answer=float) {
   float transition(float transition, char symbol, float x) {
+    return transition * x;
+  }  
+  float transitionend(float transition, float x) {
     return transition * x;
   }  
   float nil(void) {
@@ -28,8 +32,14 @@ algebra alg_pretty implements sig_dinuc(alphabet=char, answer=Rope) {
     append(res, x);
     return res;
   }
+  Rope transitionend(float transition, Rope x) {
+    Rope res;
+    append(res, x);
+    return res;
+  }
   Rope nil(void) {
     Rope res;
+    append(res, '$');
     return res;
   }
   choice [Rope] h([Rope] candidates) {
@@ -37,40 +47,43 @@ algebra alg_pretty implements sig_dinuc(alphabet=char, answer=Rope) {
   }
 }
 
-grammar gra_dinuc uses sig_dinuc(axiom=init) {
-  init = transition(CONST_FLOAT(0.25), CHAR('A'), state_A)
-       | transition(CONST_FLOAT(0.25), CHAR('C'), state_C)
-       | transition(CONST_FLOAT(0.25), CHAR('G'), state_G)
-       | transition(CONST_FLOAT(0.25), CHAR('T'), state_T)
-       ;
+grammar gra_dinuc uses sig_dinuc(axiom=state_init) {
+  state_init = transition(CONST_FLOAT(0.249), CHAR('A'), state_A)
+             | transition(CONST_FLOAT(0.249), CHAR('C'), state_C)
+             | transition(CONST_FLOAT(0.249), CHAR('G'), state_G)
+             | transition(CONST_FLOAT(0.249), CHAR('T'), state_T)
+             | transitionend(CONST_FLOAT(0.004), state_end)
+             ;
 
-  state_A = transition(CONST_FLOAT(0.300), CHAR('A'), state_A)
-          | transition(CONST_FLOAT(0.205), CHAR('C'), state_C)
-          | transition(CONST_FLOAT(0.285), CHAR('G'), state_G)
-          | transition(CONST_FLOAT(0.210), CHAR('T'), state_T)
-          | nil(EMPTY)
+  state_A = transition(CONST_FLOAT(0.299), CHAR('A'), state_A)
+          | transition(CONST_FLOAT(0.204), CHAR('C'), state_C)
+          | transition(CONST_FLOAT(0.284), CHAR('G'), state_G)
+          | transition(CONST_FLOAT(0.209), CHAR('T'), state_T)
+          | transitionend(CONST_FLOAT(0.004), state_end)
           ;
 
-  state_C = transition(CONST_FLOAT(0.322), CHAR('A'), state_A)
-          | transition(CONST_FLOAT(0.298), CHAR('C'), state_C)
-          | transition(CONST_FLOAT(0.078), CHAR('G'), state_G)
-          | transition(CONST_FLOAT(0.302), CHAR('T'), state_T)
-          | nil(EMPTY)
+  state_C = transition(CONST_FLOAT(0.321), CHAR('A'), state_A)
+          | transition(CONST_FLOAT(0.297), CHAR('C'), state_C)
+          | transition(CONST_FLOAT(0.077), CHAR('G'), state_G)
+          | transition(CONST_FLOAT(0.301), CHAR('T'), state_T)
+          | transitionend(CONST_FLOAT(0.004), state_end)
           ;
 
-  state_G = transition(CONST_FLOAT(0.248), CHAR('A'), state_A)
-          | transition(CONST_FLOAT(0.246), CHAR('C'), state_C)
-          | transition(CONST_FLOAT(0.298), CHAR('G'), state_G)
-          | transition(CONST_FLOAT(0.208), CHAR('T'), state_T)
-          | nil(EMPTY)
+  state_G = transition(CONST_FLOAT(0.247), CHAR('A'), state_A)
+          | transition(CONST_FLOAT(0.245), CHAR('C'), state_C)
+          | transition(CONST_FLOAT(0.297), CHAR('G'), state_G)
+          | transition(CONST_FLOAT(0.207), CHAR('T'), state_T)
+          | transitionend(CONST_FLOAT(0.004), state_end)
           ; 
 
-  state_T = transition(CONST_FLOAT(0.177), CHAR('A'), state_A)
-          | transition(CONST_FLOAT(0.239), CHAR('C'), state_C)
-          | transition(CONST_FLOAT(0.292), CHAR('G'), state_G)
-          | transition(CONST_FLOAT(0.292), CHAR('T'), state_T)
-          | nil(EMPTY)
+  state_T = transition(CONST_FLOAT(0.176), CHAR('A'), state_A)
+          | transition(CONST_FLOAT(0.238), CHAR('C'), state_C)
+          | transition(CONST_FLOAT(0.291), CHAR('G'), state_G)
+          | transition(CONST_FLOAT(0.291), CHAR('T'), state_T)
+          | transitionend(CONST_FLOAT(0.004), state_end)
           ;
+          
+  state_end = nil(EMPTY);
 }
 
 instance ins_ppprobenum = gra_dinuc(alg_pretty * alg_prob * alg_enum);

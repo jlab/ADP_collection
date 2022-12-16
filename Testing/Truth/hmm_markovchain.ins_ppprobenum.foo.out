@@ -1,3 +1,3 @@
 Answer: 
-( ( ACCT , 0.00461229 ) , transition( 0.25 A transition( 0.205 C transition( 0.298 C transition( 0.302 T nil( 1 ) ) ) ) ) )
+( ( ACCT$ , 1.8164e-05 ) , transition( 0.249 A transition( 0.204 C transition( 0.297 C transition( 0.301 T transitionend( 0.004 nil( 1 ) ) ) ) ) ) )
 
