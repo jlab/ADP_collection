@@ -118,6 +118,7 @@ def model_to_grammar(states: dict) -> str:
     String containing source code for grammar component of ADP source code.
     """
     gra = "grammar gra_tmhmm uses sig_tmhmm(axiom = state_begin) {\n"
+    map_state_label = dict()
     for name, state in states.items():
         # skip the header "state", which defined the alphabet
         if (name == 'header'):
@@ -130,6 +131,7 @@ def model_to_grammar(states: dict) -> str:
         if 'label' in state.keys():
             assert len(state['label']) == 1
             label = state['label'][0]
+        map_state_label['state_%s' % name] = label
 
         # normalize transitions
         # - from 'a:', 'b', 'c:', 'd' build dict {'a': 'b', 'c': 'd'}
@@ -190,7 +192,7 @@ def model_to_grammar(states: dict) -> str:
     gra += '  state_end = nil(EMPTY) # h;\n'
     gra += "}\n"
 
-    return gra
+    return gra, map_state_label
 
 
 def generic_sig_algs() -> str:
@@ -221,6 +223,24 @@ def generic_sig_algs() -> str:
         "    return list(maximum(candidates));\n"
         "  }\n"
         "}\n")
+        
+    alg_fwd_scaled = (
+        "algebra alg_fwd_scaled extends alg_viterbi {\n"
+        "  float emission(float prob, char emission) {\n"
+        "    /* 43.38 is a scaling factor against numeric instability,\n"
+        "     * as candidate probabilities tend to become very small.\n"
+        "     * The value is 1 / 25%-percentil of all emission probabilities\n"
+        "     * in the TMHMM2 model; but in principle can be any value > 1.\n"
+        "     */\n"
+        "    return 43.38 * prob;\n"
+        "  }\n"
+        "  float normalize_derivative(float q, float pfunc) {\n"
+        "    return q / pfunc;\n"
+        "  }\n"
+        "  choice [float] h([float] candidates) {\n"
+        "    return list(sum(candidates));\n"
+        "  }\n"
+        "}\n")
 
     alg_viterbi_bit = (
         "algebra alg_viterbi_bit extends alg_viterbi {\n"
@@ -238,6 +258,17 @@ def generic_sig_algs() -> str:
         "  }\n"
         "  choice [float] h([float] candidates) {\n"
         "    return list(minimum(candidates));\n"
+        "  }\n"
+        "}\n"
+    )
+
+    alg_fwd_bit = (
+        "algebra alg_fwd_bit extends alg_viterbi_bit {\n"
+        "  float normalize_derivative(float q, float pfunc) {\n"
+        "    return exp(pfunc - q);\n"
+        "  }\n"
+        "  synoptic choice [float] h([float] candidates) {\n"
+        "    return list(negexpsum(candidates));\n"
         "  }\n"
         "}\n"
     )
@@ -268,18 +299,20 @@ def generic_sig_algs() -> str:
         "}\n"
     )
 
-    return [sig, alg_viterbi, alg_viterbi_bit, alg_label]
+    return [sig, alg_viterbi, alg_fwd_scaled, alg_viterbi_bit, alg_fwd_bit,
+            alg_label]
 
 
 def generate_gapc(fp_model: str, fp_output: str):
     model = parse_model(fp_model)
 
-    grammar = model_to_grammar(model)
+    grammar = model_to_grammar(model)[0]
     comps = generic_sig_algs()
     sig = comps.pop(0)
     algs = comps
 
     with open(fp_output, 'w') as f:
+        f.write("import \"ext_hmm.hh\"\n")
         f.write("type Rope = extern\n\n")
         f.write(sig+"\n")
         f.write('algebra alg_enum auto enum;\n\n')
