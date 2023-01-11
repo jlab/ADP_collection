@@ -24,6 +24,23 @@ algebra alg_viterbi implements sig_tmhmm(alphabet=char, answer=float) {
   }
 }
 
+algebra alg_fwd_scaled extends alg_viterbi {
+  float emission(float prob, char emission) {
+    /* 43.38 is a scaling factor against numeric instability,
+     * as candidate probabilities tend to become very small.
+     * The value is 1 / median of all emission probabilities
+     * in the TMHMM2 model; but in principle can be any value > 1.
+     */
+    return 22.56 * prob;
+  }
+  float normalize_derivative(float q, float pfunc) {
+    return q / pfunc;
+  }
+  choice [float] h([float] candidates) {
+    return list(sum(candidates));
+  }
+}
+
 algebra alg_viterbi_bit extends alg_viterbi {
   float silent_transition(float prob, float t) {
     return log(1.0/prob) + t;
@@ -39,6 +56,15 @@ algebra alg_viterbi_bit extends alg_viterbi {
   }
   choice [float] h([float] candidates) {
     return list(minimum(candidates));
+  }
+}
+
+algebra alg_fwd_bit extends alg_viterbi_bit {
+  float normalize_derivative(float q, float pfunc) {
+    return exp(pfunc - q);
+  }
+  synoptic choice [float] h([float] candidates) {
+    return list(negexpsum(candidates));
   }
 }
 
