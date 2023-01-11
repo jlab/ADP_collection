@@ -63,7 +63,7 @@ algebra alg_fwd_bit extends alg_viterbi_bit {
   float normalize_derivative(float q, float pfunc) {
     return exp(pfunc - q);
   }
-  synoptic choice [float] h([float] candidates) {
+  choice [float] h([float] candidates) {
     return list(negexpsum(candidates));
   }
 }

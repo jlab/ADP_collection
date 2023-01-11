@@ -223,7 +223,7 @@ def generic_sig_algs() -> str:
         "    return list(maximum(candidates));\n"
         "  }\n"
         "}\n")
-        
+
     alg_fwd_scaled = (
         "algebra alg_fwd_scaled extends alg_viterbi {\n"
         "  float emission(float prob, char emission) {\n"
@@ -267,7 +267,7 @@ def generic_sig_algs() -> str:
         "  float normalize_derivative(float q, float pfunc) {\n"
         "    return exp(pfunc - q);\n"
         "  }\n"
-        "  synoptic choice [float] h([float] candidates) {\n"
+        "  choice [float] h([float] candidates) {\n"
         "    return list(negexpsum(candidates));\n"
         "  }\n"
         "}\n"
