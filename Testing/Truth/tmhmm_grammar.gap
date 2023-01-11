@@ -178,8 +178,6 @@ grammar gra_tmhmm uses sig_tmhmm(axiom = state_begin) {
 
   state_outglob10 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglob11) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob29) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_ihelixo1) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
   emit_outglob10 =
@@ -207,64 +205,46 @@ grammar gra_tmhmm uses sig_tmhmm(axiom = state_begin) {
 
   state_outglob11 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglob12) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob28) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob29) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
 
   state_outglob12 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglob13) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob27) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob28) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
 
   state_outglob13 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglob14) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob26) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob27) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
 
   state_outglob14 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglob15) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob25) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob26) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
 
   state_outglob15 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglob16) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob24) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob25) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
 
   state_outglob16 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglob17) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob23) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob24) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
 
   state_outglob17 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglob18) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob22) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob23) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
 
   state_outglob18 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglob19) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob21) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob22) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
 
   state_outglob19 =
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_outglobLong) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob20) |
-    transition(CONST_CHAR('O'), CONST_FLOAT(0.0), emit_outglob10, state_outglob21) |
     transition(CONST_CHAR('O'), CONST_FLOAT(1.0), emit_outglob10, state_end)
     # h;
 
@@ -327,7 +307,6 @@ grammar gra_tmhmm uses sig_tmhmm(axiom = state_begin) {
   state_out10 =
     transition(CONST_CHAR('o'), CONST_FLOAT(1.0), emit_out10, state_out11) |
     transition(CONST_CHAR('o'), CONST_FLOAT(3.54571e-14), emit_out10, state_out29) |
-    transition(CONST_CHAR('o'), CONST_FLOAT(0.0), emit_out10, state_ihelixo1) |
     transition(CONST_CHAR('o'), CONST_FLOAT(1.0), emit_out10, state_end)
     # h;
   emit_out10 =
