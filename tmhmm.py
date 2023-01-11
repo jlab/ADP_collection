@@ -1,3 +1,5 @@
+import sys
+
 MAP_LABEL_COLOR = {
     'i': '#b3e2cd',
     'O': '#fdcdac',
@@ -161,8 +163,11 @@ def model_to_grammar(states: dict) -> str:
             nt_emissions += name
             es = {x.split(':')[0]: x.split(':')[-1] for x in state['only']}
             assert abs(sum(map(float, es.values())) - 1) < 0.001
-            emissions = ["    emission(CONST_FLOAT(%s), CHAR('%s'))" % (v, k)
-                         for k, v in es.items()]
+            emissions = []
+            for k, v in es.items():
+                if float(v) <= 0:
+                    print("Emission probability of state '%s' for AA '%s' is zero! Emission will be omitted in grammar." % (name, k), file=sys.stderr)
+                emissions.append("    emission(CONST_FLOAT(%s), CHAR('%s'))" % (v, k))
         elif 'tied_letter' in state.keys():
             assert len(state['tied_letter']) == 1
             nt_emissions += state['tied_letter'][0]
@@ -180,7 +185,10 @@ def model_to_grammar(states: dict) -> str:
                 else:
                     code_transitions.append('    silent_transition(CONST_FLOAT(%s), state_%s)' % (prob, to_state))
             else:
-                code_transitions.append('    transition(CONST_CHAR(\'%s\'), CONST_FLOAT(%s), %s, state_%s)' % (label, prob, nt_emissions, to_state))
+                if float(prob) <= 0:
+                    print("Transition probability from state '%s' to state '%s' is zero! Transition will be omitted in grammar." % (name, to_state), file=sys.stderr)
+                else:
+                    code_transitions.append('    transition(CONST_CHAR(\'%s\'), CONST_FLOAT(%s), %s, state_%s)' % (label, prob, nt_emissions, to_state))
 
 
         gra += '  state_%s =\n%s\n    # h;\n' % (name, ' |\n'.join(code_transitions))
