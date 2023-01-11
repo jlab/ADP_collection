@@ -65,10 +65,11 @@ class tmhmm(TestCase):
     def test_grammar(self):
         model = parse_model(self.fp_model)
 
-        obs = model_to_grammar(model)
+        obs = model_to_grammar(model)[0]
         with open(self.fp_truth_grammar, "r") as f:
             exp = ''.join(f.readlines())
             self.assertEqual(exp, obs)
+
 
     def test_generic_components(self):
         obs = generic_sig_algs()
@@ -79,6 +80,8 @@ class tmhmm(TestCase):
     def test_generate_gapc(self):
         fp_code = os.path.join(self.fp_tmpdir, "tmhmm.gap")
         generate_gapc(self.fp_model, fp_code)
+        shutil.copyfile("../ext_hmm.hh",
+                        os.path.join(self.fp_tmpdir, "ext_hmm.hh"))
 
         cmd_gapc = 'cd %s && gapc -p "(alg_viterbi_bit %% alg_viterbi)" %s' % (
             self.fp_tmpdir, fp_code)
@@ -118,6 +121,8 @@ class tmhmm(TestCase):
         cmd_gapc = ('cd %s && gapc -p "(alg_viterbi_bit %% alg_viterbi) '
                     '* alg_label" %s') % (
             self.fp_tmpdir, fp_code)
+        shutil.copyfile("../ext_hmm.hh",
+                        os.path.join(self.fp_tmpdir, "ext_hmm.hh"))
         result_gapc = run_cmd(cmd_gapc)
         self.assertEqual(result_gapc, [""])
 
