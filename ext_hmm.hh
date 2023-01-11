@@ -35,4 +35,26 @@ negexpsum(std::pair<Iterator, Iterator> &p) {
   return negexpsum(p.first, p.second);
 }
 
+inline List_Ref<std::pair<Rope, double> > filterLowProbLabels(List_Ref<std::pair<Rope, double> > candidates_orig) {
+  List_Ref<std::pair<Rope, double> > candidates;
+  
+  // obtain most probable candidate up to here
+  double bestValue = (*candidates_orig.ref().begin()).second;
+  for (List_Ref<std::pair<Rope, double> >::iterator i = candidates_orig.ref().begin(); i != candidates_orig.ref().end(); ++i) {
+	  if (bestValue > (*i).second) {
+		  bestValue = (*i).second;
+	  }
+  }
+
+  // only keep candidates that are not smaller than the best candidate times 0.000000001
+  // a value that should be changable by the user instead of hard coding it here
+  for (List_Ref<std::pair<Rope, double> >::iterator i = candidates_orig.ref().begin(); i != candidates_orig.ref().end(); ++i) {
+	  if ((*i).second <= (bestValue + log(1/0.000000001))) {
+	    candidates.ref().push_back(*i);
+	  }
+  }
+  return candidates;
+}
+
+
 #endif
