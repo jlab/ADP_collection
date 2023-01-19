@@ -100,5 +100,26 @@ class cm(TestCase):
         # validated against cmalign-1.1.4 -g --cpu 1 --cyk --notrunc --nonbanded --tfile tmp.parsetree RF00005.cm tmp.fasta
         self.assertAlmostEqual(float(obs), 70.544)
 
+    def test_inside_micro(self):
+        model = "RFmicro"
+        sequence = "GGGCCCAUAGCUC"
+
+        cm2gapc("%s.cm" % model, self.fp_tmpdir + "/%s" % model, verbose=sys.stderr)
+
+        cmd_gapc = 'cd %s && gapc -p "alg_inside" %s.gap' % (
+            self.fp_tmpdir, model)
+        result_gapc = run_cmd(cmd_gapc)
+        self.assertEqual(result_gapc, [""])
+
+        cmd_make = 'cd %s && make -f out.mf' % (self.fp_tmpdir)
+        result_make = run_cmd(cmd_make)
+        self.assertEqual(len(result_make), 7)
+
+        cmd_binary = 'cd %s && ./out %s' % (self.fp_tmpdir, sequence)
+        result_binary = run_cmd(cmd_binary)
+        obs = result_binary[-1].strip()
+        # validated against cmalign-1.1.4 -g --cpu 1 --notrunc --nonbanded --tfile tmp.parsetree RFmicro.cm tmp.fasta
+        self.assertAlmostEqual(float(obs), -19.8979)
+
 if __name__ == '__main__':
     main()

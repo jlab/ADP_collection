@@ -323,6 +323,12 @@ def cm2gapc(fp, outname, verbose=None):
         return list(maximum(candidates));
       }
     }
+
+    algebra alg_inside extends alg_cyk {
+      choice [float] h([float] candidates) {
+        return list(bitsum(candidates));
+      }
+    }
     """
 
     program = """
