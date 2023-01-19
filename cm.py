@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 def parse_cm(fp):
     """Parses a covariance model file and returns it as a dictionary of states
