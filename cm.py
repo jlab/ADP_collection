@@ -158,8 +158,14 @@ def model2grammar(model):
                     model[model[to_index]['index']]['type'],
                     model[model[to_index]['index']]['index'],
                     index))
-            elif model[index]['type'] in ['IL', 'IR', 'ML', 'MR']:
-                transitions.append("transition(CONST_FLOAT(%f), CHAR, state_%s_%i; %i)" % (
+            elif model[index]['type'] in ['IL', 'ML']:
+                transitions.append("left_transition(CONST_FLOAT(%f), CHAR, state_%s_%i; %i)" % (
+                    model[index]['transition_bits'][inc],
+                    model[model[to_index]['index']]['type'],
+                    model[model[to_index]['index']]['index'],
+                    index))
+            elif model[index]['type'] in ['IR', 'MR']:
+                transitions.append("right_transition(CONST_FLOAT(%f), state_%s_%i, CHAR; %i)" % (
                     model[index]['transition_bits'][inc],
                     model[model[to_index]['index']]['type'],
                     model[model[to_index]['index']]['index'],
@@ -280,7 +286,8 @@ def cm2gapc(fp, outname):
     signature = """
     signature sig_cm(alphabet, answer) {
       answer silent_transition(float, answer);
-      answer transition(float, alphabet, answer; int);
+      answer left_transition(float, alphabet, answer; int);
+      answer right_transition(float, answer, alphabet; int);
       answer pair_transition(float, alphabet, answer, alphabet; int);
       answer bifurcation_transition(float, float, answer, answer; int);
       answer nil(float, void; int);
@@ -297,7 +304,10 @@ def cm2gapc(fp, outname):
       float silent_transition(float tsc, float x) {
         return tsc + x;
       }
-      float transition(float tsc, alphabet a, float x; int pos) {
+      float left_transition(float tsc, alphabet a, float x; int pos) {
+        return tsc + getEmission(pos, a) + x;
+      }
+      float right_transition(float tsc, float x, alphabet a; int pos) {
         return tsc + getEmission(pos, a) + x;
       }
       float pair_transition(float tsc, alphabet a, float x, alphabet b; int pos) {
