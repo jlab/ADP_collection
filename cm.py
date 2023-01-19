@@ -265,7 +265,7 @@ inline int charToIndex(char a, char b) {
     return header
 
 
-def cm2gapc(fp, outname):
+def cm2gapc(fp, outname, verbose=None):
     """Reads a CM file and generates two output files (gapL and *.hh)
 
     Parameters
@@ -335,6 +335,8 @@ def cm2gapc(fp, outname):
     instance cykenum = gra_cm(alg_cyk * alg_enum);
     """ % (os.path.basename(outname), signature, alg_auto, model2grammar(model))
 
+    if verbose is not None:
+        print("%s.gap" % outname, file=verbose)
     with open("%s.gap" % outname, "w") as f:
         f.write(program)
 
