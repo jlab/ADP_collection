@@ -284,61 +284,61 @@ def cm2gapc(fp, outname, verbose=None):
     probs = model2probs(model)
 
     signature = """
-    signature sig_cm(alphabet, answer) {
-      answer silent_transition(float, answer);
-      answer left_transition(float, alphabet, answer; int);
-      answer right_transition(float, answer, alphabet; int);
-      answer pair_transition(float, alphabet, answer, alphabet; int);
-      answer bifurcation_transition(float, float, answer, answer; int);
-      answer nil(float, void; int);
-      choice [answer] h([answer]);
-    }
+signature sig_cm(alphabet, answer) {
+  answer silent_transition(float, answer);
+  answer left_transition(float, alphabet, answer; int);
+  answer right_transition(float, answer, alphabet; int);
+  answer pair_transition(float, alphabet, answer, alphabet; int);
+  answer bifurcation_transition(float, float, answer, answer; int);
+  answer nil(float, void; int);
+  choice [answer] h([answer]);
+}
     """
 
     alg_auto = """
-    algebra alg_enum auto enum;
+algebra alg_enum auto enum;
 
-    algebra alg_count auto count;
+algebra alg_count auto count;
 
-    algebra alg_cyk implements sig_cm(alphabet=char, answer=float) {
-      float silent_transition(float tsc, float x) {
-        return tsc + x;
-      }
-      float left_transition(float tsc, alphabet a, float x; int pos) {
-        return tsc + getEmission(pos, a) + x;
-      }
-      float right_transition(float tsc, float x, alphabet a; int pos) {
-        return tsc + getEmission(pos, a) + x;
-      }
-      float pair_transition(float tsc, alphabet a, float x, alphabet b; int pos) {
-        return tsc + getPairEmission(pos, a, b) + x;
-      }
-      float bifurcation_transition(float tsc_left, float tsc_right, float left, float right; int pos) {
-        return tsc_left + tsc_right + left + right;
-      }
-      float nil(float tsc, void; int pos) {
-        return tsc;
-      }
-      choice [float] h([float] candidates) {
-        return list(maximum(candidates));
-      }
-    }
+algebra alg_cyk implements sig_cm(alphabet=char, answer=float) {
+  float silent_transition(float tsc, float x) {
+    return tsc + x;
+  }
+  float left_transition(float tsc, alphabet a, float x; int pos) {
+    return tsc + getEmission(pos, a) + x;
+  }
+  float right_transition(float tsc, float x, alphabet a; int pos) {
+    return tsc + getEmission(pos, a) + x;
+  }
+  float pair_transition(float tsc, alphabet a, float x, alphabet b; int pos) {
+    return tsc + getPairEmission(pos, a, b) + x;
+  }
+  float bifurcation_transition(float tsc_left, float tsc_right, float left, float right; int pos) {
+    return tsc_left + tsc_right + left + right;
+  }
+  float nil(float tsc, void; int pos) {
+    return tsc;
+  }
+  choice [float] h([float] candidates) {
+    return list(maximum(candidates));
+  }
+}
 
-    algebra alg_inside extends alg_cyk {
-      choice [float] h([float] candidates) {
-        return list(bitsum(candidates));
-      }
-    }
+algebra alg_inside extends alg_cyk {
+  choice [float] h([float] candidates) {
+    return list(bitsum(candidates));
+  }
+}
     """
 
     program = """
-    import "%s.hh"
-    %s
-    %s
-    %s
-    instance count = gra_cm(alg_count);
-    instance enumcyk = gra_cm(alg_enum * alg_cyk);
-    instance cykenum = gra_cm(alg_cyk * alg_enum);
+import "%s.hh"
+%s
+%s
+%s
+instance count = gra_cm(alg_count);
+instance enumcyk = gra_cm(alg_enum * alg_cyk);
+instance cykenum = gra_cm(alg_cyk * alg_enum);
     """ % (os.path.basename(outname), signature, alg_auto, model2grammar(model))
 
     if verbose is not None:
