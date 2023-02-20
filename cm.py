@@ -138,10 +138,11 @@ def model2grammar(model):
                 continue
             if (model[index]['type'] in ['S', 'D']):
                 #print(model[index], to_index)
-                transitions.append("silent_transition(CONST_FLOAT(%f), state_%s_%i)" % (
+                transitions.append("silent_transition(CONST_FLOAT(%f), state_%s_%i; %i)" % (
                     model[index]['transition_bits'][inc],
                     model[model[to_index]['index']]['type'],
-                    model[model[to_index]['index']]['index']))
+                    model[model[to_index]['index']]['index'],
+                    index))
             elif model[index]['type'] == 'B':
                 transitions.append("bifurcation_transition(CONST_FLOAT(%f), CONST_FLOAT(%f), state_%s_%i, state_%s_%i; %i)" % (
                     model[index]['transition_bits'][0],
@@ -285,7 +286,7 @@ def cm2gapc(fp, outname, verbose=None):
 
     signature = """
 signature sig_cm(alphabet, answer) {
-  answer silent_transition(float, answer);
+  answer silent_transition(float, answer; int);
   answer left_transition(float, alphabet, answer; int);
   answer right_transition(float, answer, alphabet; int);
   answer pair_transition(float, alphabet, answer, alphabet; int);
@@ -301,7 +302,7 @@ algebra alg_enum auto enum;
 algebra alg_count auto count;
 
 algebra alg_cyk implements sig_cm(alphabet=char, answer=float) {
-  float silent_transition(float tsc, float x) {
+  float silent_transition(float tsc, float x; int pos) {
     return tsc + x;
   }
   float left_transition(float tsc, alphabet a, float x; int pos) {
