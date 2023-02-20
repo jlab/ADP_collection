@@ -232,6 +232,13 @@ def generic_sig_algs() -> str:
         "  }\n"
         "}\n")
 
+    alg_fwd = (
+        "algebra alg_fwd extends alg_viterbi {\n"
+        "  choice [float] h([float] candidates) {\n"
+        "    return list(sum(candidates));\n"
+        "  }\n"
+        "}\n")
+
     alg_fwd_scaled = (
         "algebra alg_fwd_scaled extends alg_viterbi {\n"
         "  float emission(float prob, char emission) {\n"
@@ -307,8 +314,8 @@ def generic_sig_algs() -> str:
         "}\n"
     )
 
-    return [sig, alg_viterbi, alg_fwd_scaled, alg_viterbi_bit, alg_fwd_bit,
-            alg_label]
+    return [sig, alg_viterbi, alg_fwd, alg_fwd_scaled, alg_viterbi_bit,
+            alg_fwd_bit, alg_label]
 
 
 def generate_gapc(fp_model: str, fp_output: str):

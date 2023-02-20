@@ -5,7 +5,7 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-    
+
 jobs:
   bgap:
     runs-on: ubuntu-latest
@@ -29,3 +29,4 @@ jobs:
         cd Testing/
         python test_python_dp.py
         python test_tmhmm.py
+        python test_cm.py
