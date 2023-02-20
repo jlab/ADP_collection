@@ -24,6 +24,12 @@ algebra alg_viterbi implements sig_tmhmm(alphabet=char, answer=float) {
   }
 }
 
+algebra alg_fwd extends alg_viterbi {
+  choice [float] h([float] candidates) {
+    return list(sum(candidates));
+  }
+}
+
 algebra alg_fwd_scaled extends alg_viterbi {
   float emission(float prob, char emission) {
     /* 43.38 is a scaling factor against numeric instability,
