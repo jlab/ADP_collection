@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import matplotlib.colors as colors
+import shutil
 
 TYPES = ['match', 'insertion', 'deletion']
 
@@ -420,7 +421,7 @@ def get_accum_state_probability(outside, state):
         return 0
 
 
-def _model2backbone_basepairs(model, outside=None):
+def _model2backbone_basepairs(model, outside=None, probs=None):
     """Convert multi state covariance model into 3-state linear table + base-pair information"""
     curr_node_index = None
 
@@ -429,7 +430,13 @@ def _model2backbone_basepairs(model, outside=None):
     backbone = dict()
     basepairs = dict()
     for index in range(len(model)):
-        prob = get_accum_state_probability(outside, '%s_%i' % (model[index]['type'], index))
+        prob = 0
+        if outside is not None:
+            prob = get_accum_state_probability(outside, '%s_%i' % (model[index]['type'], index))
+        if probs is not None:
+            key = '%s_%i' % (model[index]['type'], index)
+            if key in probs:
+                prob = probs[key]
         if model[index]['node_type'] == 'MATL':
             col = int(model[index]['model_positions'][0])
             max_aln_column = max(max_model_column, col)
@@ -510,8 +517,8 @@ def _backbone2table(backbone):
     return table
 
 
-def model2probdot(model, outside=None):
-    backbone, basepairs, max_model_column = _model2backbone_basepairs(model, outside)
+def model2probdot(model, outside=None, probs=None):
+    backbone, basepairs, max_model_column = _model2backbone_basepairs(model, outside=outside, probs=probs)
 
     dot =  "digraph H {\n"
     dot += "  rna [\n"
@@ -534,3 +541,51 @@ def model2probdot(model, outside=None):
     dot += "}\n"
 
     return dot
+
+
+def patch_report_insideoutside(fp_header):
+    """Replaces the generic report_insideoutside function of gapc with a CM specific one to ease parsing of probabilities"""
+    def _reportState(type_, index):
+        out = ""
+        out += "    List_Ref<double> answers_state_%s_%i;\n" % (type_, index)
+        out += "    double eval_state_%s_%i;\n" % (type_, index)
+        out += "    for (unsigned int t_0_i = t_0_left_most; t_0_i <= t_0_right_most; ++t_0_i) {\n"
+        out += "      for (unsigned int t_0_j = t_0_i; t_0_j <= t_0_right_most; ++t_0_j) {\n"
+        out += "        res_inside = nt_state_%s_%i(t_0_i, t_0_j);\n" % (type_, index)
+        out += "        res_outside = nt_outside_state_%s_%i(t_0_i, t_0_j);\n" % (type_, index)
+        out += "        if (is_not_empty(res_inside) && is_not_empty(res_outside)) {\n"
+        out += "          push_back(answers_state_%s_%i, (res_inside + res_outside - res_full - res_empty));\n" % (type_, index)
+        out += "        }\n"
+        out += "      }\n"
+        out += "    }\n"
+        out += "    eval_state_%s_%i = pow(2, h(answers_state_%s_%i));\n" % (type_, index, type_, index)
+        out += "    out << \"state_%s_%i: \" << eval_state_%s_%i << \"\\n\";\n" % (type_, index, type_, index)
+        out += "\n"
+        return out
+
+    code = ""
+    with open(fp_header) as f:
+        in_function = False
+        for line in f.readlines():
+            if 'void report_insideoutside(std::ostream &out) {' in line:
+                in_function = True
+                code += line
+                code += "    double res_full = nt_state_S_0(t_0_left_most, t_0_right_most);\n"
+                code += "    double res_empty = nt_outside_state_S_0(t_0_left_most, t_0_right_most);\n"
+                code += "    double res_inside;\n"
+                code += "    double res_outside;\n"
+                code += "\n"
+            elif 'template <typename Value> void  print_result(std::ostream &out, Value& res) {' in line:
+                code += "  }\n\n"
+                in_function = False
+            if in_function:
+                if 'out << "start answers state_' in line:
+                    _, type_, index = line.split('(')[0].split()[-1].split('_')
+                    if (type_ in ['D', 'IL', 'IR', 'MP', 'ML', 'MR']):
+                        code += _reportState(type_, int(index))
+            else:
+                code += line
+
+    shutil.copyfile(fp_header, fp_header + '.orig')
+    with open(fp_header, "w") as f:
+        f.write(code)
