@@ -9,7 +9,7 @@ import os
 from unittest import TestCase, main
 
 sys.path.append("../")
-from cm import (cm2gapc, model2probs, model2grammar, parse_cm)
+from cm import (cm2gapc, model2probs, model2grammar, parse_cm, model2probdot)
 from test_tmhmm import run_cmd
 
 class cm(TestCase):
@@ -120,6 +120,14 @@ class cm(TestCase):
         obs = result_binary[-1].strip()
         # validated against cmalign-1.1.4 -g --cpu 1 --notrunc --nonbanded --tfile tmp.parsetree RFmicro.cm tmp.fasta
         self.assertAlmostEqual(float(obs), -19.8979)
+
+    def test_model2probdot(self):
+        model = parse_cm("RF00005.cm")
+        dot = model2probdot(model, None)
+
+        with open("Truth/rf00005_noprob.dot", "r") as f:
+            exp = ''.join(f.readlines())
+            self.assertEqual(exp, dot)
 
 if __name__ == '__main__':
     main()
