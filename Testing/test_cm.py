@@ -10,7 +10,7 @@ from unittest import TestCase, main
 
 sys.path.append("../")
 from cm import (cm2gapc, model2probs, model2grammar, parse_cm, model2probdot,
-                patch_report_insideoutside)
+                patch_report_insideoutside, acm2probdot)
 from test_tmhmm import run_cmd
 
 class cm(TestCase):
@@ -137,7 +137,13 @@ class cm(TestCase):
         with open("Truth/rf00005_report.hh", "r") as f:
             exp = ''.join(f.readlines())
             self.assertEqual(obs, exp)
-        #print("".join(exp))
+
+    def test_acm2probdot(self):
+        obs = acm2probdot('Data/acmsearch_RF00005.gap', probs=None)
+
+        with open("Truth/acm00005.dot", "r") as f:
+            exp = ''.join(f.readlines())
+            self.assertEqual(obs, exp)
 
 if __name__ == '__main__':
     main()
