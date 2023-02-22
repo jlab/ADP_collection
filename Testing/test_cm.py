@@ -9,7 +9,8 @@ import os
 from unittest import TestCase, main
 
 sys.path.append("../")
-from cm import (cm2gapc, model2probs, model2grammar, parse_cm, model2probdot)
+from cm import (cm2gapc, model2probs, model2grammar, parse_cm, model2probdot,
+                patch_report_insideoutside)
 from test_tmhmm import run_cmd
 
 class cm(TestCase):
@@ -128,6 +129,15 @@ class cm(TestCase):
         with open("Truth/rf00005_noprob.dot", "r") as f:
             exp = ''.join(f.readlines())
             self.assertEqual(exp, dot)
+
+    def test_patch_report_insideoutside(self):
+        fp_input = os.path.join(self.fp_tmpdir, 'rf00005.hh')
+        shutil.copyfile("Data/rf00005.hh", fp_input)
+        obs = patch_report_insideoutside(fp_input, inplace=False)
+        with open("Truth/rf00005_report.hh", "r") as f:
+            exp = ''.join(f.readlines())
+            self.assertEqual(obs, exp)
+        #print("".join(exp))
 
 if __name__ == '__main__':
     main()

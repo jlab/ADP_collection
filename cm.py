@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os
 import matplotlib.colors as colors
 import shutil
+import re
 
 TYPES = ['match', 'insertion', 'deletion']
 
@@ -543,26 +544,27 @@ def model2probdot(model, outside=None, probs=None):
     return dot
 
 
-def patch_report_insideoutside(fp_header):
+def patch_report_insideoutside(fp_header, axiom='state_S_0', valid_ntprefixes=['state_D', 'state_IL', 'state_IR', 'state_MP', 'state_ML', 'state_MR'], inplace=True):
     """Replaces the generic report_insideoutside function of gapc with a CM specific one to ease parsing of probabilities"""
-    def _reportState(type_, index):
+    def _reportNT(nt):
         out = ""
-        out += "    List_Ref<double> answers_state_%s_%i;\n" % (type_, index)
-        out += "    double eval_state_%s_%i;\n" % (type_, index)
+        out += "    List_Ref<double> answers_%s;\n" % nt
+        out += "    double eval_%s;\n" % nt
         out += "    for (unsigned int t_0_i = t_0_left_most; t_0_i <= t_0_right_most; ++t_0_i) {\n"
         out += "      for (unsigned int t_0_j = t_0_i; t_0_j <= t_0_right_most; ++t_0_j) {\n"
-        out += "        res_inside = nt_state_%s_%i(t_0_i, t_0_j);\n" % (type_, index)
-        out += "        res_outside = nt_outside_state_%s_%i(t_0_i, t_0_j);\n" % (type_, index)
+        out += "        res_inside = nt_%s(t_0_i, t_0_j);\n" % nt
+        out += "        res_outside = nt_outside_%s(t_0_i, t_0_j);\n" % nt
         out += "        if (is_not_empty(res_inside) && is_not_empty(res_outside)) {\n"
-        out += "          push_back(answers_state_%s_%i, (res_inside + res_outside - res_full - res_empty));\n" % (type_, index)
+        out += "          push_back(answers_%s, (res_inside + res_outside - res_full - res_empty));\n" % nt
         out += "        }\n"
         out += "      }\n"
         out += "    }\n"
-        out += "    eval_state_%s_%i = pow(2, h(answers_state_%s_%i));\n" % (type_, index, type_, index)
-        out += "    out << \"state_%s_%i: \" << eval_state_%s_%i << \"\\n\";\n" % (type_, index, type_, index)
+        out += "    eval_%s = pow(2, h(answers_%s));\n" % (nt, nt)
+        out += "    out << \"%s: \" << eval_%s << \"\\n\";\n" % (nt, nt)
         out += "\n"
         return out
 
+    rx_nt_start = re.compile("out << \"start answers (\S+)\(")
     code = ""
     with open(fp_header) as f:
         in_function = False
@@ -570,8 +572,8 @@ def patch_report_insideoutside(fp_header):
             if 'void report_insideoutside(std::ostream &out) {' in line:
                 in_function = True
                 code += line
-                code += "    double res_full = nt_state_S_0(t_0_left_most, t_0_right_most);\n"
-                code += "    double res_empty = nt_outside_state_S_0(t_0_left_most, t_0_right_most);\n"
+                code += "    double res_full = nt_%s(t_0_left_most, t_0_right_most);\n" % axiom
+                code += "    double res_empty = nt_outside_%s(t_0_left_most, t_0_right_most);\n" % axiom
                 code += "    double res_inside;\n"
                 code += "    double res_outside;\n"
                 code += "\n"
@@ -579,13 +581,18 @@ def patch_report_insideoutside(fp_header):
                 code += "  }\n\n"
                 in_function = False
             if in_function:
-                if 'out << "start answers state_' in line:
-                    _, type_, index = line.split('(')[0].split()[-1].split('_')
-                    if (type_ in ['D', 'IL', 'IR', 'MP', 'ML', 'MR']):
-                        code += _reportState(type_, int(index))
+                m = rx_nt_start.search(line)
+                if m is not None:
+                    nt = m[1]
+                    if any([nt.startswith(c) for c in valid_ntprefixes]):
+                        code += _reportNT(nt)
             else:
-                code += line
+                if inplace:
+                    code += line
 
-    shutil.copyfile(fp_header, fp_header + '.orig')
-    with open(fp_header, "w") as f:
-        f.write(code)
+    if inplace:
+        shutil.copyfile(fp_header, fp_header + '.orig')
+        with open(fp_header, "w") as f:
+            f.write(code)
+    else:
+        return code
