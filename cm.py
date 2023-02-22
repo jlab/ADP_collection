@@ -546,53 +546,78 @@ def model2probdot(model, outside=None, probs=None):
 
 def patch_report_insideoutside(fp_header, axiom='state_S_0', valid_ntprefixes=['state_D', 'state_IL', 'state_IR', 'state_MP', 'state_ML', 'state_MR'], inplace=True):
     """Replaces the generic report_insideoutside function of gapc with a CM specific one to ease parsing of probabilities"""
-    def _reportNT(nt):
+    def _reportNT(nt, forloops, nt_idx_inside, nt_idx_outside):
+        indent = "  " * len(forloops)
         out = ""
         out += "    List_Ref<double> answers_%s;\n" % nt
         out += "    double eval_%s;\n" % nt
-        out += "    for (unsigned int t_0_i = t_0_left_most; t_0_i <= t_0_right_most; ++t_0_i) {\n"
-        out += "      for (unsigned int t_0_j = t_0_i; t_0_j <= t_0_right_most; ++t_0_j) {\n"
-        out += "        res_inside = nt_%s(t_0_i, t_0_j);\n" % nt
-        out += "        res_outside = nt_outside_%s(t_0_i, t_0_j);\n" % nt
-        out += "        if (is_not_empty(res_inside) && is_not_empty(res_outside)) {\n"
-        out += "          push_back(answers_%s, (res_inside + res_outside - res_full - res_empty));\n" % nt
-        out += "        }\n"
-        out += "      }\n"
-        out += "    }\n"
+        out += "".join(forloops)
+        out += "%s    res_inside = nt_%s(%s);\n" % (indent, nt, nt_idx_inside)
+        out += "%s    res_outside = nt_outside_%s(%s);\n" % (indent, nt, nt_idx_outside)
+        out += "%s    if (is_not_empty(res_inside) && is_not_empty(res_outside)) {\n" % indent
+        out += "%s      push_back(answers_%s, (res_inside + res_outside - res_full - res_empty));\n" % (indent, nt)
+        out += "%s    }\n" % indent
+        for i in reversed(range(len(forloops))):
+            out += "%s    }\n" % ("  " * i)
         out += "    eval_%s = pow(2, h(answers_%s));\n" % (nt, nt)
         out += "    out << \"%s: \" << eval_%s << \"\\n\";\n" % (nt, nt)
         out += "\n"
         return out
 
-    rx_nt_start = re.compile("out << \"start answers (\S+)\(")
+    rx_nt_start = re.compile("out << \"start answers (\S+)\(\"(.+?)\"")
     code = ""
     with open(fp_header) as f:
         in_function = False
-        for line in f.readlines():
+
+        # first round: collect for-loops and indices for NT calls, since
+        # inside and outside NTs might have different dimensions
+        forloops = dict()
+        ntcalls = dict()
+        stack_fl = []
+        lines = iter(f.readlines())
+        code_pre = ""
+        code_post = ""
+        post = False
+        for line in lines:
             if 'void report_insideoutside(std::ostream &out) {' in line:
                 in_function = True
-                code += line
-                code += "    double res_full = nt_%s(t_0_left_most, t_0_right_most);\n" % axiom
-                code += "    double res_empty = nt_outside_%s(t_0_left_most, t_0_right_most);\n" % axiom
-                code += "    double res_inside;\n"
-                code += "    double res_outside;\n"
-                code += "\n"
+                code_pre += line
             elif 'template <typename Value> void  print_result(std::ostream &out, Value& res) {' in line:
-                code += "  }\n\n"
                 in_function = False
+                post = True
             if in_function:
+                if line.strip().startswith('for ('):
+                    stack_fl.append(line)
                 m = rx_nt_start.search(line)
                 if m is not None:
                     nt = m[1]
-                    if any([nt.startswith(c) for c in valid_ntprefixes]):
-                        code += _reportNT(nt)
+                    # obtain true dimensions
+                    nt_idx = next(lines).split('(')[-1].split(')')[0]
+                    ntcalls[nt] = nt_idx
+                    forloops[nt] = stack_fl
+                    stack_fl = []
             else:
-                if inplace:
-                    code += line
+                if post is False:
+                    code_pre += line
+                else:
+                    code_post += line
+
+        code = ""
+        code += "    double res_full = nt_%s(t_0_left_most, t_0_right_most);\n" % axiom
+        code += "    double res_empty = nt_outside_%s(t_0_left_most, t_0_right_most);\n" % axiom
+        code += "    double res_inside;\n"
+        code += "    double res_outside;\n"
+        code += "\n"
+        for nt in forloops.keys():
+            if nt.startswith('outside_'):
+                continue
+            if any([nt.startswith(c) for c in valid_ntprefixes]):
+                code += _reportNT(nt, forloops[nt], ntcalls[nt], ntcalls['outside_%s' % nt])
+        code += "  }\n"
 
     if inplace:
         shutil.copyfile(fp_header, fp_header + '.orig')
         with open(fp_header, "w") as f:
-            f.write(code)
+            f.write(code_pre + code + code_post)
     else:
         return code
