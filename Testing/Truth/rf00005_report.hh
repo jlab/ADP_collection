@@ -1,4 +1,3 @@
-  void report_insideoutside(std::ostream &out) {
     double res_full = nt_state_S_0(t_0_left_most, t_0_right_most);
     double res_empty = nt_outside_state_S_0(t_0_left_most, t_0_right_most);
     double res_inside;
@@ -707,12 +706,10 @@
     List_Ref<double> answers_state_IL_1;
     double eval_state_IL_1;
     for (unsigned int t_0_i = t_0_left_most; t_0_i <= t_0_right_most; ++t_0_i) {
-      for (unsigned int t_0_j = t_0_i; t_0_j <= t_0_right_most; ++t_0_j) {
-        res_inside = nt_state_IL_1(t_0_i, t_0_j);
-        res_outside = nt_outside_state_IL_1(t_0_i, t_0_j);
-        if (is_not_empty(res_inside) && is_not_empty(res_outside)) {
-          push_back(answers_state_IL_1, (res_inside + res_outside - res_full - res_empty));
-        }
+      res_inside = nt_state_IL_1(t_0_i, t_0_right_most);
+      res_outside = nt_outside_state_IL_1(t_0_i, t_0_right_most);
+      if (is_not_empty(res_inside) && is_not_empty(res_outside)) {
+        push_back(answers_state_IL_1, (res_inside + res_outside - res_full - res_empty));
       }
     }
     eval_state_IL_1 = pow(2, h(answers_state_IL_1));
@@ -3001,4 +2998,3 @@
     out << "state_MR_95: " << eval_state_MR_95 << "\n";
 
   }
-
