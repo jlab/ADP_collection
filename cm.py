@@ -4,6 +4,7 @@ import os
 import matplotlib.colors as colors
 import shutil
 import re
+from collections import OrderedDict
 
 TYPES = ['match', 'insertion', 'deletion']
 
@@ -538,6 +539,86 @@ def model2probdot(model, outside=None, probs=None):
         dot += "  center_%i_%i [pos = \"%f,%f!\" label=\"%.2f\"];\n" % (o, c, dot_coord_x, dot_coord_y, prob) # ;\n" % (o_col, c_col)
         dot += "  rna:state_%i -> center_%i_%i [arrowhead=none penwidth=10 color=\"%s\" ];\n" % (o_col, o, c, colors.rgb2hex(cmap_bp(prob)))
         dot += "  rna:state_%i -> center_%i_%i [arrowhead=none penwidth=10 color=\"%s\" ];\n" % (c_col, o, c, colors.rgb2hex(cmap_bp(prob)))
+
+    dot += "}\n"
+
+    return dot
+
+
+def acm2probdot(fp_acm_gap, probs=None):
+    rx_grammar_start = re.compile("grammar\s+(\S+)\s+uses\s+(\S+)\(axiom\s*=\s*(\S+)\)\s*\{")
+    rx_grammar_end = re.compile("instance\s+\S+\s*=")
+
+    nodes = []
+    edges = []
+    map_node_type = dict()
+    map_parent2child = dict()
+    with open(fp_acm_gap, 'r') as f:
+        in_grammar = False
+        term_idx = 0
+        for line in f.readlines():
+            m = rx_grammar_start.search(line)
+            if m is not None:
+                in_grammar = True
+                nodes.append(m[3])
+                continue
+            if in_grammar:
+                m = rx_grammar_end.search(line)
+                if m is not None:
+                    in_grammar = False
+                    continue
+                if " = " in line:
+                    lhs, rhss = line.split(' # h;')[0].split(" = ")
+                    lhs = lhs.strip()
+                    nodes.append(lhs)
+                    map_node_type[lhs] = list({x for x in [t.split('(')[0] for t in rhss.split(" | ")] if x not in ['Lr', 'lR', 'bg', 'INS', 'DEL']})[0]
+
+                    for rhs in rhss.split(" | "):
+                        m = re.findall("(a_\d+)", rhs)
+                        for nt in m:
+                            if lhs not in map_parent2child:
+                                map_parent2child[lhs] = []
+                            map_parent2child[lhs].append(nt)
+                            nodes.append(nt)
+                            edges.append((lhs, nt))
+
+    dot = "digraph H {\n"
+    term_idx = 0
+    cmap_bp = plt.get_cmap('Greens')
+    for node in sorted(set(nodes)):
+        if (map_node_type[node] != 'NIL'):
+            color = ""
+            if (probs is not None) and (node in probs):
+                color = "[ label=\"%s: %.2f\" fillcolor=\"%s\" style=filled ]" % (node, probs[node], colors.rgb2hex(cmap_bp(probs[node])))
+            dot += "  %s %s;\n" % (node, color)
+            if map_node_type[node] == 'PK':
+                dot += "  char_%i [ label=\"<\" ];\n" % term_idx
+                dot += "  %s -> char_%i;\n" % (node, term_idx)
+                term_idx += 1
+                dot += "  char_%i [ label=\">\" ];\n" % term_idx
+                dot += "  %s -> char_%i;\n" % (node, term_idx)
+                term_idx += 1
+                children = []
+                for child in list(OrderedDict.fromkeys(map_parent2child[node])):
+                    if (child != node) and (map_node_type[child] != 'NIL'):
+                        children.append(" -> %s" % child)
+                dot += "  { rank = same; char_%i %s -> char_%i %s [style = invis]; }\n" % (term_idx-2, children[0], term_idx-1, "".join(children[1:]))
+            if map_node_type[node] == 'MAT':
+                dot += "  char_%i [ label=\"*\" ];\n" % term_idx
+                dot += "  %s -> char_%i;\n" % (node, term_idx)
+                children = []
+                for child in list(OrderedDict.fromkeys(map_parent2child[node])):
+                    if (child != node) and (map_node_type[child] != 'NIL'):
+                        children.append(" -> %s" % child)
+                if len(children) > 0:
+                    dot += "  { rank = same; char_%i %s [style = invis]; }\n" % (term_idx, "".join(children))
+                term_idx += 1
+
+    for (f,t) in sorted(set(edges)):
+        if (f == t):
+            continue
+        if (map_node_type[t] != 'NIL'):
+            dot += "  %s -> %s;\n" % (f, t)
 
     dot += "}\n"
 
