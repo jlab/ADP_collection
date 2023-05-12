@@ -54,6 +54,8 @@ signature sig_elmamun(alphabet, answer) {
   answer add(answer, alphabet, answer);
   answer mult(answer, alphabet, answer);
   answer minus(answer, alphabet, answer);
+  answer heinz(answer, Rope, answer);
+  answer nil(void);
   choice [answer] h([answer]);
 }
 
@@ -67,6 +69,15 @@ algebra alg_pretty implements sig_elmamun(alphabet=char, answer=Rope) {
     return res;
   }
   Rope add(Rope left, char opSymbol, Rope right) {
+    Rope res;
+    append(res, '(');
+    append(res, left);
+    append(res, opSymbol);
+    append(res, right);
+    append(res, ')');
+    return res;
+  }
+  Rope heinz(Rope left, Rope opSymbol, Rope right) {
     Rope res;
     append(res, '(');
     append(res, left);
@@ -93,6 +104,10 @@ algebra alg_pretty implements sig_elmamun(alphabet=char, answer=Rope) {
     append(res, ')');
     return res;
   }
+  Rope nil(void) {
+    Rope res;
+    return res;
+  }
   choice [Rope] h([Rope] candidates) {
     return candidates;
   }
@@ -105,11 +120,17 @@ algebra alg_buyer implements sig_elmamun(alphabet=char, answer=int) {
   int add(int left, char opSymbol, int right) {
     return left + right;
   }
+  int heinz(int left, Rope opSymbol, int right) {
+    return left + right;
+  }
   int mult(int left, char opSymbol, int right) {
     return left * right;
   }
   int minus(int left, char opSymbol, int right) {
     return left - right;
+  }
+  int nil(void) {
+    return 0;
   }
   choice [int] h([int] candidates) {
     return list(minimum(candidates));
@@ -132,6 +153,13 @@ algebra alg_time implements sig_elmamun(alphabet=char, answer=int) {
       return right + 2;
     }
   }
+  int heinz(int left, Rope opSymbol, int right) {
+    if (left > right) {
+      return left + 2;
+    } else {
+      return right + 2;
+    }
+  }
   int mult(int left, char opSymbol, int right) {
     if (left > right) {
       return left + 5;
@@ -146,16 +174,46 @@ algebra alg_time implements sig_elmamun(alphabet=char, answer=int) {
       return right + 3;
     }
   }
+  int nil(void) {
+    return 0;
+  }
   choice [int] h([int] candidates) {
     return list(minimum(candidates));
   }
 }
 
+algebra alg_score implements sig_elmamun(alphabet=char, answer=float) {
+  float number(int value) {
+    return 1.0;
+  }
+  float add(float left, char opSymbol, float right) {
+    return left * right * exp(2);
+  }
+  float heinz(float left, Rope opSymbol, float right) {
+    return left * right;
+  }
+  float mult(float left, char opSymbol, float right) {
+    return left * right * exp(3);
+  }
+  float minus(float left, char opSymbol, float right) {
+    return left * right;
+  }
+  float nil(void) {
+    return 1.0;
+  }
+  choice [float] h([float] candidates) {
+    return list(sum(candidates));
+  }
+}
+
+
 grammar gra_elmamun uses sig_elmamun(axiom = formula) {
   formula = number(INT)
 	  | add(formula, CHAR('+'), formula)
 	  | mult(formula, CHAR('*'), formula)
-	  | minus(formula, CHAR('-'), formula)
+         //| minus(formula, CHAR('-'), formula)
+         //| heinz(formula, ROPE("manfred"), formula)
+          | nil(EMPTY)
 	  # h;
 }
 

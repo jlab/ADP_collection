@@ -42,4 +42,29 @@ inline Rope trace_pushback(char a, const rope::Ref<X> &x) {
 	}
 	return res;
 }
+
+template <typename Iterator>
+inline dual combH(std::pair<Iterator, Iterator> i) {
+  dual res;
+  res.v = 0.0;
+  res.vdot = 0.0;
+
+  if (i.first == i.second) {
+	empty(res);
+	return res;
+  }
+
+  for (Iterator it = i.first; it != i.second; ++it) {
+	res.v += exp((*it).v);
+  }
+
+  for (Iterator it = i.first; it != i.second; ++it) {
+	double q = exp((*it).v) / res.v;
+	res.vdot += q * (*it).vdot;
+  }
+
+  res.v = log(res.v);
+
+  return res;
+}
 #endif
