@@ -80,20 +80,20 @@ check_new_old_eqTwoTrack alignments.gap nw ins_gotoh_countmanual "AC" "DC" foo
 check_new_old_eq alignments_singletrack.gap nw ins_needlemanwunsch_count "FREIZEIT@TRIEGTIEZ" aliss
 check_new_old_eq alignments_singletrack.gap nw ins_traces_count "FREIZEIT@TRIEGTIEZ" aliss
 check_new_old_eq alignments_singletrack.gap nw ins_semiglobal_count "ZEITGEIST@SLIE" aliss
-#check_new_old_eq alignments_singletrack.gap nw ins_endgapfree_count "FREIZEILT@TSIEGTIEZ" aliss
-#check_new_old_eq alignments_singletrack.gap nw ins_smithwaterman_count "EISZEITEN@GITIEZEG" aliss
+check_new_old_eq alignments_singletrack.gap nw ins_endgapfree_count "FREIZEILT@TSIEGTIEZ" aliss
+check_new_old_eq alignments_singletrack.gap nw ins_smithwaterman_count "EISZEITEN@GITIEZEG" aliss
 check_new_old_eq alignments_singletrack.gap nw ins_gotoh_count "CG@AGCC" aliss
 
 check_new_old_eq alignments_singletrack.gap nw ins_needlemanwunsch_similaritycount "FREIZEIT@TRIEGTIEZ" aliss
 check_new_old_eq alignments_singletrack.gap nw ins_semiglobal_similaritycount "ZEITGEIST@SLIE" aliss
-#check_new_old_eq alignments_singletrack.gap nw ins_endgapfree_similaritycount "FREIZEILT@TRIEGTIEZ" aliss
-#check_new_old_eq alignments_singletrack.gap nw ins_smithwaterman_similaritycount "EISZEITEN@GITIETEG" aliss
+check_new_old_eq alignments_singletrack.gap nw ins_endgapfree_similaritycount "FREIZEILT@TRIEGTIEZ" aliss
+check_new_old_eq alignments_singletrack.gap nw ins_smithwaterman_similaritycount "EISZEITEN@GITIEZEG" aliss
 check_new_old_eq alignments_singletrack.gap nw ins_gotoh_similaritycount "CG" "CCGA" aliss
 
 check_new_old_eq alignments_singletrack.gap nw ins_needlemanwunsch_similaritypp "FREIZEIT@TSIEGTIEZ" aliss
 check_new_old_eq alignments_singletrack.gap nw ins_semiglobal_similaritypp "ZEITGEIST@SLIE" aliss
-#check_new_old_eq alignments_singletrack.gap nw ins_endgapfree_similaritypp "FREIZEILT@TSIEGTIEZ" aliss
-#check_new_old_eq alignments_singletrack.gap nw ins_smithwaterman_similaritypp "EISZEITEN@GITIETEG" aliss
+check_new_old_eq alignments_singletrack.gap nw ins_endgapfree_similaritypp "FREIZEILT@TSIEGTIEZ" aliss
+check_new_old_eq alignments_singletrack.gap nw ins_smithwaterman_similaritypp "EISZEITEN@GITIEZEG" aliss
 check_new_old_eq alignments_singletrack.gap nw ins_gotoh_similaritypp "CG" "CCGA" aliss
 
 check_new_old_eq alignments_singletrack.gap nw ins_gotoh_pp "AC@CD" aliss
