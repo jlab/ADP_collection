@@ -12,7 +12,8 @@ signature sig_alignments(alphabet, answer) {
 	
   answer Region(Rope, answer);
   answer RegionEnd(Rope, answer);
-  //~ answer Region_Pr(<Rope, void>, answer, <void, Rope>);
+  answer Region_Pr(Rope, answer);
+  answer Region_PrEnd(answer, Rope);
   //~ answer Region_Pr_Pr(<void, Rope>, answer, <void, Rope>);
 	
   answer Insx(alphabet, answer);
@@ -48,9 +49,12 @@ algebra alg_similarity implements sig_alignments(alphabet=char, answer=int) {
   int RegionEnd(Rope aright, int x) {
     return x;
   }
-  //~ int Region_Pr(<Rope aleft, void>, int x, <void, Rope bright>) {
-    //~ return x;
-  //~ }
+  int Region_Pr(Rope aleft, int x) {
+    return x;
+  }
+  int Region_PrEnd(int x, Rope bright) {
+    return x;
+  }
   //~ int Region_Pr_Pr(<void, Rope bleft>, int x, <void, Rope bright>) {
     //~ return x;
   //~ }
@@ -90,9 +94,12 @@ algebra alg_countmanual implements sig_alignments(alphabet=char, answer=int) {
    int RegionEnd(Rope aright, int x) {
     return x;
   }
-  //~ int Region_Pr(<Rope aleft, void>, int x, <void, Rope bright>) {
-    //~ return x;
-  //~ }
+  int Region_Pr(Rope aleft, int x) {
+    return x;
+  }
+  int Region_PrEnd(int x, Rope bright) {
+    return x;
+  }
   //~ int Region_Pr_Pr(<void, Rope bleft>, int x, <void, Rope bright>) {
     //~ return x;
   //~ }
@@ -157,17 +164,24 @@ algebra alg_pretty implements sig_alignments(alphabet=char, answer=typ_ali) {
     append(res.second, '_', size(asecond));
     return res;
   }
-  //~ typ_ali Region_Pr(<Rope afirst, void>, typ_ali x, <void, Rope bsecond>) {
-    //~ typ_ali res;
-    //~ append(res.first, afirst);
-    //~ append(res.first, x.first);
-    //~ append(res.first, '_', size(bsecond));
+  typ_ali Region_Pr(Rope afirst, typ_ali x) {
+    typ_ali res;
+    append(res.first, afirst);
+    append(res.first, x.first);
 	  
-    //~ append(res.second, '_', size(afirst));
-    //~ append(res.second, x.second);
-    //~ append(res.second, bsecond);
-    //~ return res;
-  //~ }
+    append(res.second, '_', size(afirst));
+    append(res.second, x.second);
+    return res;
+  }
+  typ_ali Region_PrEnd(typ_ali x, Rope bsecond) {
+    typ_ali res;
+    append(res.first, x.first);
+    append(res.first, '_', size(bsecond));
+	  
+    append(res.second, x.second);
+    append_reverse(res.second, bsecond);
+    return res;
+  }
   //~ typ_ali Region_Pr_Pr(<void, Rope bfirst>, typ_ali x, <void, Rope bsecond>) {
     //~ typ_ali res;
     //~ append(res.first, '_', size(bfirst));
@@ -226,17 +240,24 @@ algebra alg_pretty_onegap extends alg_pretty {
     append(res.second, '-', size(asecond));
     return res;
   }
-  //~ typ_ali Region_Pr(<Rope afirst, void>, typ_ali x, <void, Rope bsecond>) {
-    //~ typ_ali res;
-    //~ append(res.first, afirst);
-    //~ append(res.first, x.first);
-    //~ append(res.first, '-', size(bsecond));
+  typ_ali Region_Pr(Rope afirst, typ_ali x) {
+    typ_ali res;
+    append(res.first, afirst);
+    append(res.first, x.first);
 	  
-    //~ append(res.second, '-', size(afirst));
-    //~ append(res.second, x.second);
-    //~ append(res.second, bsecond);
-    //~ return res;
-  //~ }
+    append(res.second, '-', size(afirst));
+    append(res.second, x.second);
+    return res;
+  }  
+  typ_ali Region_PrEnd(typ_ali x, Rope bsecond) {
+    typ_ali res;
+    append(res.first, x.first);
+    append(res.first, '-', size(bsecond));
+	  
+    append(res.second, x.second);
+    append(res.second, bsecond);
+    return res;
+  }
   //~ typ_ali Region_Pr_Pr(<void, Rope bfirst>, typ_ali x, <void, Rope bsecond>) {
     //~ typ_ali res;
     //~ append(res.first, '-', size(bfirst));
@@ -304,12 +325,18 @@ algebra alg_editops implements sig_alignments(alphabet=char, answer=Rope) {
     append(res, x);
     return res;
   }
-  //~ Rope Region_Pr(<Rope aleft, void>, Rope x, <void, Rope bright>) {
-    //~ Rope res;
-    //~ append(res, '2');
-    //~ append(res, x);
-    //~ return res;
-  //~ }
+  Rope Region_Pr(Rope aleft, Rope x) {
+    Rope res;
+    append(res, '2');
+    append(res, x);
+    return res;
+  }  
+  Rope Region_PrEnd(Rope x, Rope bright) {
+    Rope res;
+    append(res, '2');
+    append(res, x);
+    return res;
+  }
   //~ Rope Region_Pr_Pr(<void, Rope bleft>, Rope x, <void, Rope bright>) {
     //~ Rope res;
     //~ append(res, '3');
@@ -389,17 +416,20 @@ grammar gra_semiglobal uses sig_alignments(axiom=S) {
     # h;
 }
 
-//~ // pair-wise end-gap-free alignment, e.g. for assembly
-//~ grammar gra_endgapfree uses sig_alignments(axiom=S) {
-  //~ S = Region_Pr(<ROPE0, EMPTY>, A, <EMPTY, ROPE0>)
-    //~ # h;
+// pair-wise end-gap-free alignment, e.g. for assembly
+grammar gra_endgapfree uses sig_alignments(axiom=S) {
+  S = Region_Pr(ROPE0, A)
+    # h;
 	
-  //~ A = Ins(<CHAR, EMPTY>, A)
-    //~ | Del(<EMPTY, CHAR>, A)
-    //~ | Ers(<CHAR, CHAR>, A)
-    //~ | Sto(<EMPTY, EMPTY>)
-    //~ # h;
-//~ }
+  A = Ins(CHAR, A)
+    | Del(A, CHAR)
+    | Ers(CHAR, A, CHAR)
+    | Region_PrEnd(P, ROPE0)
+    # h;
+
+  P = Sto(CHAR('@'))
+    # h;
+}
 
 //~ // pair-wise local alignment, e.g. BLAST
 //~ grammar gra_smithwaterman uses sig_alignments(axiom=S) {
@@ -435,20 +465,20 @@ grammar gra_gotoh uses sig_alignments(axiom=A) {
 
 instance ins_needlemanwunsch_count = gra_needlemanwunsch(alg_count);
 instance ins_semiglobal_count = gra_semiglobal(alg_count);
-//~ instance ins_endgapfree_count = gra_endgapfree(alg_count);
+instance ins_endgapfree_count = gra_endgapfree(alg_count);
 //~ instance ins_smithwaterman_count = gra_smithwaterman(alg_count);
 instance ins_gotoh_count = gra_gotoh(alg_count);
 instance ins_traces_count = gra_traces(alg_count);
 
 instance ins_needlemanwunsch_similaritycount = gra_needlemanwunsch(alg_similarity * alg_count);
 instance ins_semiglobal_similaritycount = gra_semiglobal(alg_similarity * alg_count);
-//~ instance ins_endgapfree_similaritycount = gra_endgapfree(alg_similarity * alg_count);
+instance ins_endgapfree_similaritycount = gra_endgapfree(alg_similarity * alg_count);
 //~ instance ins_smithwaterman_similaritycount = gra_smithwaterman(alg_similarity * alg_count);
 instance ins_gotoh_similaritycount = gra_gotoh(alg_similarity * alg_count);
 
 instance ins_needlemanwunsch_similaritypp = gra_needlemanwunsch(alg_similarity * alg_pretty);
 instance ins_semiglobal_similaritypp = gra_semiglobal(alg_similarity * alg_pretty);
-//~ instance ins_endgapfree_similaritypp = gra_endgapfree(alg_similarity * alg_pretty);
+instance ins_endgapfree_similaritypp = gra_endgapfree(alg_similarity * alg_pretty);
 //~ instance ins_smithwaterman_similaritypp = gra_smithwaterman(alg_similarity * alg_pretty);
 instance ins_gotoh_similaritypp = gra_gotoh(alg_similarity * alg_pretty);
 
