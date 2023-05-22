@@ -14,7 +14,8 @@ signature sig_alignments(alphabet, answer) {
   answer RegionEnd(Rope, answer);
   answer Region_Pr(Rope, answer);
   answer Region_PrEnd(answer, Rope);
-  //~ answer Region_Pr_Pr(<void, Rope>, answer, <void, Rope>);
+  answer Region_Pr_Pr(answer, Rope);
+  answer Region_Pr_PrEnd(answer, Rope);
 	
   answer Insx(alphabet, answer);
   answer Delx(answer, alphabet);
@@ -55,9 +56,12 @@ algebra alg_similarity implements sig_alignments(alphabet=char, answer=int) {
   int Region_PrEnd(int x, Rope bright) {
     return x;
   }
-  //~ int Region_Pr_Pr(<void, Rope bleft>, int x, <void, Rope bright>) {
-    //~ return x;
-  //~ }
+  int Region_Pr_Pr(int x, Rope bleft) {
+    return x;
+  }
+  int Region_Pr_PrEnd(int x, Rope bright) {
+    return x;
+  }
 	
   // this is slightly different form http://rna.informatik.uni-freiburg.de/Teaching/index.jsp?toolName=Gotoh#
   // as there Ins + Insx is computed for first blank, we here score Ins for first blank and Insx for all following ones
@@ -100,9 +104,12 @@ algebra alg_countmanual implements sig_alignments(alphabet=char, answer=int) {
   int Region_PrEnd(int x, Rope bright) {
     return x;
   }
-  //~ int Region_Pr_Pr(<void, Rope bleft>, int x, <void, Rope bright>) {
-    //~ return x;
-  //~ }
+  int Region_Pr_Pr(int x, Rope bleft) {
+    return x;
+  }  
+  int Region_Pr_PrEnd(int x, Rope bright) {
+    return x;
+  }
 	
   int Insx(alphabet a, int x) {
     return x;
@@ -182,17 +189,24 @@ algebra alg_pretty implements sig_alignments(alphabet=char, answer=typ_ali) {
     append_reverse(res.second, bsecond);
     return res;
   }
-  //~ typ_ali Region_Pr_Pr(<void, Rope bfirst>, typ_ali x, <void, Rope bsecond>) {
-    //~ typ_ali res;
-    //~ append(res.first, '_', size(bfirst));
-    //~ append(res.first, x.first);
-    //~ append(res.first, '_', size(bsecond));
+  typ_ali Region_Pr_Pr(typ_ali x, Rope bfirst) {
+    typ_ali res;
+    append(res.first, '_', size(bfirst));
+    append(res.first, x.first);
 	  
-    //~ append(res.second, bfirst);
-    //~ append(res.second, x.second);
-    //~ append(res.second, bsecond);
-    //~ return res;
-  //~ }
+    append_reverse(res.second, bfirst);
+    append(res.second, x.second);
+    return res;
+  }
+  typ_ali Region_Pr_PrEnd(typ_ali x, Rope bsecond) {
+    typ_ali res;
+    append(res.first, x.first);
+    append(res.first, '_', size(bsecond));
+	  
+    append(res.second, x.second);
+    append_reverse(res.second, bsecond);
+    return res;
+  }
 	
   // this is slightly different form http://rna.informatik.uni-freiburg.de/Teaching/index.jsp?toolName=Gotoh#
   // as there Ins + Insx is computed for first blank, we here score Ins for first blank and Insx for all following ones
@@ -258,17 +272,24 @@ algebra alg_pretty_onegap extends alg_pretty {
     append(res.second, bsecond);
     return res;
   }
-  //~ typ_ali Region_Pr_Pr(<void, Rope bfirst>, typ_ali x, <void, Rope bsecond>) {
-    //~ typ_ali res;
-    //~ append(res.first, '-', size(bfirst));
-    //~ append(res.first, x.first);
-    //~ append(res.first, '-', size(bsecond));
+  typ_ali Region_Pr_Pr(typ_ali x, Rope bfirst) {
+    typ_ali res;
+    append(res.first, '-', size(bfirst));
+    append(res.first, x.first);
+ 	  
+    append(res.second, bfirst);
+    append(res.second, x.second);
+    return res;
+  }
+  typ_ali Region_Pr_PrEnd(typ_ali x, Rope bsecond) {
+    typ_ali res;
+    append(res.first, x.first);
+    append(res.first, '-', size(bsecond));
 	  
-    //~ append(res.second, bfirst);
-    //~ append(res.second, x.second);
-    //~ append(res.second, bsecond);
-    //~ return res;
-  //~ }
+    append(res.second, x.second);
+    append_reverse(res.second, bsecond);
+    return res;
+  }
   typ_ali Insx(alphabet a, typ_ali x) {
     typ_ali res;
     append(res.first, a);
@@ -337,12 +358,18 @@ algebra alg_editops implements sig_alignments(alphabet=char, answer=Rope) {
     append(res, x);
     return res;
   }
-  //~ Rope Region_Pr_Pr(<void, Rope bleft>, Rope x, <void, Rope bright>) {
-    //~ Rope res;
-    //~ append(res, '3');
-    //~ append(res, x);
-    //~ return res;
-  //~ }
+  Rope Region_Pr_Pr(Rope x, Rope bleft) {
+    Rope res;
+    append(res, '3');
+    append(res, x);
+    return res;
+  }
+  Rope Region_Pr_PrEnd(Rope x, Rope bright) {
+    Rope res;
+    append(res, '3');
+    append(res, x);
+    return res;
+  }
 	
   // this is slightly different form http://rna.informatik.uni-freiburg.de/Teaching/index.jsp?toolName=Gotoh#
   // as there Ins + Insx is computed for first blank, we here score Ins for first blank and Insx for all following ones
@@ -431,20 +458,26 @@ grammar gra_endgapfree uses sig_alignments(axiom=S) {
     # h;
 }
 
-//~ // pair-wise local alignment, e.g. BLAST
-//~ grammar gra_smithwaterman uses sig_alignments(axiom=S) {
-  //~ S = Region(<ROPE0, EMPTY>, T, <ROPE0, EMPTY>)
-    //~ # h;
+// pair-wise local alignment, e.g. BLAST
+grammar gra_smithwaterman uses sig_alignments(axiom=S) {
+  S = Region(ROPE0, T)
+    # h;
+
+  T = Region_Pr_Pr(A, ROPE0)
+    # h;
 	
-  //~ T = Region_Pr_Pr(<EMPTY, ROPE0>, A, <EMPTY, ROPE0>)
-    //~ # h;
+  A = Ins(CHAR, A)
+    | Del(A, CHAR)
+    | Ers(CHAR, A, CHAR)
+    | RegionEnd(ROPE0, R)
+    # h;
+
+  R = Region_Pr_PrEnd(P, ROPE0)
+    # h;
 	
-  //~ A = Ins(<CHAR, EMPTY>, A)
-    //~ | Del(<EMPTY, CHAR>, A)
-    //~ | Ers(<CHAR, CHAR>, A)
-    //~ | Sto(<EMPTY, EMPTY>)
-    //~ # h;
-//~ }
+  P = Sto(CHAR('@'))
+    # h;
+}
 
 // pair-wise global alignment with affine gap costs
 grammar gra_gotoh uses sig_alignments(axiom=A) {
@@ -466,23 +499,23 @@ grammar gra_gotoh uses sig_alignments(axiom=A) {
 instance ins_needlemanwunsch_count = gra_needlemanwunsch(alg_count);
 instance ins_semiglobal_count = gra_semiglobal(alg_count);
 instance ins_endgapfree_count = gra_endgapfree(alg_count);
-//~ instance ins_smithwaterman_count = gra_smithwaterman(alg_count);
+instance ins_smithwaterman_count = gra_smithwaterman(alg_count);
 instance ins_gotoh_count = gra_gotoh(alg_count);
 instance ins_traces_count = gra_traces(alg_count);
 
 instance ins_needlemanwunsch_similaritycount = gra_needlemanwunsch(alg_similarity * alg_count);
 instance ins_semiglobal_similaritycount = gra_semiglobal(alg_similarity * alg_count);
 instance ins_endgapfree_similaritycount = gra_endgapfree(alg_similarity * alg_count);
-//~ instance ins_smithwaterman_similaritycount = gra_smithwaterman(alg_similarity * alg_count);
+instance ins_smithwaterman_similaritycount = gra_smithwaterman(alg_similarity * alg_count);
 instance ins_gotoh_similaritycount = gra_gotoh(alg_similarity * alg_count);
 
 instance ins_needlemanwunsch_similaritypp = gra_needlemanwunsch(alg_similarity * alg_pretty);
 instance ins_semiglobal_similaritypp = gra_semiglobal(alg_similarity * alg_pretty);
 instance ins_endgapfree_similaritypp = gra_endgapfree(alg_similarity * alg_pretty);
-//~ instance ins_smithwaterman_similaritypp = gra_smithwaterman(alg_similarity * alg_pretty);
+instance ins_smithwaterman_similaritypp = gra_smithwaterman(alg_similarity * alg_pretty);
 instance ins_gotoh_similaritypp = gra_gotoh(alg_similarity * alg_pretty);
 
-//~ instance test = gra_smithwaterman(alg_pretty * alg_enum);
+instance test = gra_smithwaterman(alg_pretty * alg_enum);
 instance ins_traces_ppcount = gra_traces(alg_pretty * alg_count);
 
 // used in lecture as example of how to compile:
