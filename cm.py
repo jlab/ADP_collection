@@ -38,7 +38,7 @@ def parse_cm(fp):
         states = dict()
         node = dict()
         for line in f.readlines():
-            if line.startswith('INFERNAL1/a'):
+            if line.startswith(('INFERNAL1/a', 'HMMER3/f')):
                 entry_started = True
                 continue
             if line.strip() == "//":
