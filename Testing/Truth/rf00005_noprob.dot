@@ -1,0 +1,292 @@
+digraph H {
+  rna [
+    shape=plaintext
+    label=<
+<table border='0' cellborder='0'>
+  <tr>
+    <td port='state_7' bgcolor='#f7fcf5' ><font >7: 0.00</font></td>
+    <td port='state_13' bgcolor='#f7fcf5' ><font >13: 0.00</font></td>
+    <td port='state_19' bgcolor='#f7fcf5' ><font >19: 0.00</font></td>
+    <td port='state_25' bgcolor='#f7fcf5' ><font >25: 0.00</font></td>
+    <td port='state_31' bgcolor='#f7fcf5' ><font >31: 0.00</font></td>
+    <td port='state_37' bgcolor='#f7fcf5' ><font >37: 0.00</font></td>
+    <td port='state_43' bgcolor='#f7fcf5' ><font >43: 0.00</font></td>
+    <td port='state_48' bgcolor='#f7fcf5' ><font >48: 0.00</font></td>
+    <td port='state_51' bgcolor='#f7fcf5' ><font >51: 0.00</font></td>
+    <td port='state_125' bgcolor='#f7fcf5' ><font >125: 0.00</font></td>
+    <td port='state_131' bgcolor='#f7fcf5' ><font >131: 0.00</font></td>
+    <td port='state_137' bgcolor='#f7fcf5' ><font >137: 0.00</font></td>
+    <td port='state_143' bgcolor='#f7fcf5' ><font >143: 0.00</font></td>
+    <td port='state_148' bgcolor='#f7fcf5' ><font >148: 0.00</font></td>
+    <td port='state_151' bgcolor='#f7fcf5' ><font >151: 0.00</font></td>
+    <td port='state_154' bgcolor='#f7fcf5' ><font >154: 0.00</font></td>
+    <td port='state_157' bgcolor='#f7fcf5' ><font >157: 0.00</font></td>
+    <td port='state_160' bgcolor='#f7fcf5' ><font >160: 0.00</font></td>
+    <td port='state_163' bgcolor='#f7fcf5' ><font >163: 0.00</font></td>
+    <td port='state_166' bgcolor='#f7fcf5' ><font >166: 0.00</font></td>
+    <td port='state_142' bgcolor='#f7fcf5' ><font >142: 0.00</font></td>
+    <td port='state_136' bgcolor='#f7fcf5' ><font >136: 0.00</font></td>
+    <td port='state_130' bgcolor='#f7fcf5' ><font >130: 0.00</font></td>
+    <td port='state_124' bgcolor='#f7fcf5' ><font >124: 0.00</font></td>
+    <td port='state_172' bgcolor='#f7fcf5' ><font >172: 0.00</font></td>
+    <td port='state_176' bgcolor='#f7fcf5' ><font >176: 0.00</font></td>
+    <td port='state_182' bgcolor='#f7fcf5' ><font >182: 0.00</font></td>
+    <td port='state_188' bgcolor='#f7fcf5' ><font >188: 0.00</font></td>
+    <td port='state_194' bgcolor='#f7fcf5' ><font >194: 0.00</font></td>
+    <td port='state_200' bgcolor='#f7fcf5' ><font >200: 0.00</font></td>
+    <td port='state_205' bgcolor='#f7fcf5' ><font >205: 0.00</font></td>
+    <td port='state_208' bgcolor='#f7fcf5' ><font >208: 0.00</font></td>
+    <td port='state_211' bgcolor='#f7fcf5' ><font >211: 0.00</font></td>
+    <td port='state_214' bgcolor='#f7fcf5' ><font >214: 0.00</font></td>
+    <td port='state_217' bgcolor='#f7fcf5' ><font >217: 0.00</font></td>
+    <td port='state_220' bgcolor='#f7fcf5' ><font >220: 0.00</font></td>
+    <td port='state_223' bgcolor='#f7fcf5' ><font >223: 0.00</font></td>
+    <td port='state_199' bgcolor='#f7fcf5' ><font >199: 0.00</font></td>
+    <td port='state_193' bgcolor='#f7fcf5' ><font >193: 0.00</font></td>
+    <td port='state_187' bgcolor='#f7fcf5' ><font >187: 0.00</font></td>
+    <td port='state_181' bgcolor='#f7fcf5' ><font >181: 0.00</font></td>
+    <td port='state_175' bgcolor='#f7fcf5' ><font >175: 0.00</font></td>
+    <td port='state_57' bgcolor='#f7fcf5' ><font >57: 0.00</font></td>
+    <td port='state_60' bgcolor='#f7fcf5' ><font >60: 0.00</font></td>
+    <td port='state_63' bgcolor='#f7fcf5' ><font >63: 0.00</font></td>
+    <td port='state_66' bgcolor='#f7fcf5' ><font >66: 0.00</font></td>
+    <td port='state_70' bgcolor='#f7fcf5' ><font >70: 0.00</font></td>
+    <td port='state_76' bgcolor='#f7fcf5' ><font >76: 0.00</font></td>
+    <td port='state_82' bgcolor='#f7fcf5' ><font >82: 0.00</font></td>
+    <td port='state_88' bgcolor='#f7fcf5' ><font >88: 0.00</font></td>
+    <td port='state_94' bgcolor='#f7fcf5' ><font >94: 0.00</font></td>
+    <td port='state_99' bgcolor='#f7fcf5' ><font >99: 0.00</font></td>
+    <td port='state_102' bgcolor='#f7fcf5' ><font >102: 0.00</font></td>
+    <td port='state_105' bgcolor='#f7fcf5' ><font >105: 0.00</font></td>
+    <td port='state_108' bgcolor='#f7fcf5' ><font >108: 0.00</font></td>
+    <td port='state_111' bgcolor='#f7fcf5' ><font >111: 0.00</font></td>
+    <td port='state_114' bgcolor='#f7fcf5' ><font >114: 0.00</font></td>
+    <td port='state_117' bgcolor='#f7fcf5' ><font >117: 0.00</font></td>
+    <td port='state_93' bgcolor='#f7fcf5' ><font >93: 0.00</font></td>
+    <td port='state_87' bgcolor='#f7fcf5' ><font >87: 0.00</font></td>
+    <td port='state_81' bgcolor='#f7fcf5' ><font >81: 0.00</font></td>
+    <td port='state_75' bgcolor='#f7fcf5' ><font >75: 0.00</font></td>
+    <td port='state_69' bgcolor='#f7fcf5' ><font >69: 0.00</font></td>
+    <td port='state_42' bgcolor='#f7fcf5' ><font >42: 0.00</font></td>
+    <td port='state_36' bgcolor='#f7fcf5' ><font >36: 0.00</font></td>
+    <td port='state_30' bgcolor='#f7fcf5' ><font >30: 0.00</font></td>
+    <td port='state_24' bgcolor='#f7fcf5' ><font >24: 0.00</font></td>
+    <td port='state_18' bgcolor='#f7fcf5' ><font >18: 0.00</font></td>
+    <td port='state_12' bgcolor='#f7fcf5' ><font >12: 0.00</font></td>
+    <td port='state_6' bgcolor='#f7fcf5' ><font >6: 0.00</font></td>
+    <td port='state_3' bgcolor='#f7fcf5' ><font >3: 0.00</font></td>
+  </tr>
+  <tr>
+    <td port='state_10' bgcolor='#f7fbff' ><font >10: 0.00</font></td>
+    <td port='state_16' bgcolor='#f7fbff' ><font >16: 0.00</font></td>
+    <td port='state_22' bgcolor='#f7fbff' ><font >22: 0.00</font></td>
+    <td port='state_28' bgcolor='#f7fbff' ><font >28: 0.00</font></td>
+    <td port='state_34' bgcolor='#f7fbff' ><font >34: 0.00</font></td>
+    <td port='state_40' bgcolor='#f7fbff' ><font >40: 0.00</font></td>
+    <td port='state_46' bgcolor='#f7fbff' ><font >46: 0.00</font></td>
+    <td port='state_50' bgcolor='#f7fbff' ><font >50: 0.00</font></td>
+    <td port='state_53' bgcolor='#f7fbff' ><font >53: 0.00</font></td>
+    <td port='state_128' bgcolor='#f7fbff' ><font >128: 0.00</font></td>
+    <td port='state_134' bgcolor='#f7fbff' ><font >134: 0.00</font></td>
+    <td port='state_140' bgcolor='#f7fbff' ><font >140: 0.00</font></td>
+    <td port='state_146' bgcolor='#f7fbff' ><font >146: 0.00</font></td>
+    <td port='state_150' bgcolor='#f7fbff' ><font >150: 0.00</font></td>
+    <td port='state_153' bgcolor='#f7fbff' ><font >153: 0.00</font></td>
+    <td port='state_156' bgcolor='#f7fbff' ><font >156: 0.00</font></td>
+    <td port='state_159' bgcolor='#f7fbff' ><font >159: 0.00</font></td>
+    <td port='state_162' bgcolor='#f7fbff' ><font >162: 0.00</font></td>
+    <td port='state_165' bgcolor='#f7fbff' ><font >165: 0.00</font></td>
+    <td port='state_168' bgcolor='#f7fbff' ><font >168: 0.00</font></td>
+    <td port='state_146' bgcolor='#f7fbff' ><font >146: 0.00</font></td>
+    <td port='state_140' bgcolor='#f7fbff' ><font >140: 0.00</font></td>
+    <td port='state_134' bgcolor='#f7fbff' ><font >134: 0.00</font></td>
+    <td port='state_128' bgcolor='#f7fbff' ><font >128: 0.00</font></td>
+    <td port='state_174' bgcolor='#f7fbff' ><font >174: 0.00</font></td>
+    <td port='state_179' bgcolor='#f7fbff' ><font >179: 0.00</font></td>
+    <td port='state_185' bgcolor='#f7fbff' ><font >185: 0.00</font></td>
+    <td port='state_191' bgcolor='#f7fbff' ><font >191: 0.00</font></td>
+    <td port='state_197' bgcolor='#f7fbff' ><font >197: 0.00</font></td>
+    <td port='state_203' bgcolor='#f7fbff' ><font >203: 0.00</font></td>
+    <td port='state_207' bgcolor='#f7fbff' ><font >207: 0.00</font></td>
+    <td port='state_210' bgcolor='#f7fbff' ><font >210: 0.00</font></td>
+    <td port='state_213' bgcolor='#f7fbff' ><font >213: 0.00</font></td>
+    <td port='state_216' bgcolor='#f7fbff' ><font >216: 0.00</font></td>
+    <td port='state_219' bgcolor='#f7fbff' ><font >219: 0.00</font></td>
+    <td port='state_222' bgcolor='#f7fbff' ><font >222: 0.00</font></td>
+    <td port='state_225' bgcolor='#f7fbff' ><font >225: 0.00</font></td>
+    <td port='state_203' bgcolor='#f7fbff' ><font >203: 0.00</font></td>
+    <td port='state_197' bgcolor='#f7fbff' ><font >197: 0.00</font></td>
+    <td port='state_191' bgcolor='#f7fbff' ><font >191: 0.00</font></td>
+    <td port='state_185' bgcolor='#f7fbff' ><font >185: 0.00</font></td>
+    <td port='state_179' bgcolor='#f7fbff' ><font >179: 0.00</font></td>
+    <td port='state_59' bgcolor='#f7fbff' ><font >59: 0.00</font></td>
+    <td port='state_62' bgcolor='#f7fbff' ><font >62: 0.00</font></td>
+    <td port='state_65' bgcolor='#f7fbff' ><font >65: 0.00</font></td>
+    <td port='state_68' bgcolor='#f7fbff' ><font >68: 0.00</font></td>
+    <td port='state_73' bgcolor='#f7fbff' ><font >73: 0.00</font></td>
+    <td port='state_79' bgcolor='#f7fbff' ><font >79: 0.00</font></td>
+    <td port='state_85' bgcolor='#f7fbff' ><font >85: 0.00</font></td>
+    <td port='state_91' bgcolor='#f7fbff' ><font >91: 0.00</font></td>
+    <td port='state_97' bgcolor='#f7fbff' ><font >97: 0.00</font></td>
+    <td port='state_101' bgcolor='#f7fbff' ><font >101: 0.00</font></td>
+    <td port='state_104' bgcolor='#f7fbff' ><font >104: 0.00</font></td>
+    <td port='state_107' bgcolor='#f7fbff' ><font >107: 0.00</font></td>
+    <td port='state_110' bgcolor='#f7fbff' ><font >110: 0.00</font></td>
+    <td port='state_113' bgcolor='#f7fbff' ><font >113: 0.00</font></td>
+    <td port='state_116' bgcolor='#f7fbff' ><font >116: 0.00</font></td>
+    <td port='state_119' bgcolor='#f7fbff' ><font >119: 0.00</font></td>
+    <td port='state_97' bgcolor='#f7fbff' ><font >97: 0.00</font></td>
+    <td port='state_91' bgcolor='#f7fbff' ><font >91: 0.00</font></td>
+    <td port='state_85' bgcolor='#f7fbff' ><font >85: 0.00</font></td>
+    <td port='state_79' bgcolor='#f7fbff' ><font >79: 0.00</font></td>
+    <td port='state_73' bgcolor='#f7fbff' ><font >73: 0.00</font></td>
+    <td port='state_46' bgcolor='#f7fbff' ><font >46: 0.00</font></td>
+    <td port='state_40' bgcolor='#f7fbff' ><font >40: 0.00</font></td>
+    <td port='state_34' bgcolor='#f7fbff' ><font >34: 0.00</font></td>
+    <td port='state_28' bgcolor='#f7fbff' ><font >28: 0.00</font></td>
+    <td port='state_22' bgcolor='#f7fbff' ><font >22: 0.00</font></td>
+    <td port='state_16' bgcolor='#f7fbff' ><font >16: 0.00</font></td>
+    <td port='state_10' bgcolor='#f7fbff' ><font >10: 0.00</font></td>
+    <td port='state_5' bgcolor='#f7fbff' ><font >5: 0.00</font></td>
+  </tr>
+  <tr>
+    <td port='state_9' bgcolor='#fff5f0' ><font >9: 0.00</font></td>
+    <td port='state_15' bgcolor='#fff5f0' ><font >15: 0.00</font></td>
+    <td port='state_21' bgcolor='#fff5f0' ><font >21: 0.00</font></td>
+    <td port='state_27' bgcolor='#fff5f0' ><font >27: 0.00</font></td>
+    <td port='state_33' bgcolor='#fff5f0' ><font >33: 0.00</font></td>
+    <td port='state_39' bgcolor='#fff5f0' ><font >39: 0.00</font></td>
+    <td port='state_45' bgcolor='#fff5f0' ><font >45: 0.00</font></td>
+    <td port='state_49' bgcolor='#fff5f0' ><font >49: 0.00</font></td>
+    <td port='state_52' bgcolor='#fff5f0' ><font >52: 0.00</font></td>
+    <td port='state_127' bgcolor='#fff5f0' ><font >127: 0.00</font></td>
+    <td port='state_133' bgcolor='#fff5f0' ><font >133: 0.00</font></td>
+    <td port='state_139' bgcolor='#fff5f0' ><font >139: 0.00</font></td>
+    <td port='state_145' bgcolor='#fff5f0' ><font >145: 0.00</font></td>
+    <td port='state_149' bgcolor='#fff5f0' ><font >149: 0.00</font></td>
+    <td port='state_152' bgcolor='#fff5f0' ><font >152: 0.00</font></td>
+    <td port='state_155' bgcolor='#fff5f0' ><font >155: 0.00</font></td>
+    <td port='state_158' bgcolor='#fff5f0' ><font >158: 0.00</font></td>
+    <td port='state_161' bgcolor='#fff5f0' ><font >161: 0.00</font></td>
+    <td port='state_164' bgcolor='#fff5f0' ><font >164: 0.00</font></td>
+    <td port='state_167' bgcolor='#fff5f0' ><font >167: 0.00</font></td>
+    <td port='state_145' bgcolor='#fff5f0' ><font >145: 0.00</font></td>
+    <td port='state_139' bgcolor='#fff5f0' ><font >139: 0.00</font></td>
+    <td port='state_133' bgcolor='#fff5f0' ><font >133: 0.00</font></td>
+    <td port='state_127' bgcolor='#fff5f0' ><font >127: 0.00</font></td>
+    <td port='state_173' bgcolor='#fff5f0' ><font >173: 0.00</font></td>
+    <td port='state_178' bgcolor='#fff5f0' ><font >178: 0.00</font></td>
+    <td port='state_184' bgcolor='#fff5f0' ><font >184: 0.00</font></td>
+    <td port='state_190' bgcolor='#fff5f0' ><font >190: 0.00</font></td>
+    <td port='state_196' bgcolor='#fff5f0' ><font >196: 0.00</font></td>
+    <td port='state_202' bgcolor='#fff5f0' ><font >202: 0.00</font></td>
+    <td port='state_206' bgcolor='#fff5f0' ><font >206: 0.00</font></td>
+    <td port='state_209' bgcolor='#fff5f0' ><font >209: 0.00</font></td>
+    <td port='state_212' bgcolor='#fff5f0' ><font >212: 0.00</font></td>
+    <td port='state_215' bgcolor='#fff5f0' ><font >215: 0.00</font></td>
+    <td port='state_218' bgcolor='#fff5f0' ><font >218: 0.00</font></td>
+    <td port='state_221' bgcolor='#fff5f0' ><font >221: 0.00</font></td>
+    <td port='state_224' bgcolor='#fff5f0' ><font >224: 0.00</font></td>
+    <td port='state_202' bgcolor='#fff5f0' ><font >202: 0.00</font></td>
+    <td port='state_196' bgcolor='#fff5f0' ><font >196: 0.00</font></td>
+    <td port='state_190' bgcolor='#fff5f0' ><font >190: 0.00</font></td>
+    <td port='state_184' bgcolor='#fff5f0' ><font >184: 0.00</font></td>
+    <td port='state_178' bgcolor='#fff5f0' ><font >178: 0.00</font></td>
+    <td port='state_58' bgcolor='#fff5f0' ><font >58: 0.00</font></td>
+    <td port='state_61' bgcolor='#fff5f0' ><font >61: 0.00</font></td>
+    <td port='state_64' bgcolor='#fff5f0' ><font >64: 0.00</font></td>
+    <td port='state_67' bgcolor='#fff5f0' ><font >67: 0.00</font></td>
+    <td port='state_72' bgcolor='#fff5f0' ><font >72: 0.00</font></td>
+    <td port='state_78' bgcolor='#fff5f0' ><font >78: 0.00</font></td>
+    <td port='state_84' bgcolor='#fff5f0' ><font >84: 0.00</font></td>
+    <td port='state_90' bgcolor='#fff5f0' ><font >90: 0.00</font></td>
+    <td port='state_96' bgcolor='#fff5f0' ><font >96: 0.00</font></td>
+    <td port='state_100' bgcolor='#fff5f0' ><font >100: 0.00</font></td>
+    <td port='state_103' bgcolor='#fff5f0' ><font >103: 0.00</font></td>
+    <td port='state_106' bgcolor='#fff5f0' ><font >106: 0.00</font></td>
+    <td port='state_109' bgcolor='#fff5f0' ><font >109: 0.00</font></td>
+    <td port='state_112' bgcolor='#fff5f0' ><font >112: 0.00</font></td>
+    <td port='state_115' bgcolor='#fff5f0' ><font >115: 0.00</font></td>
+    <td port='state_118' bgcolor='#fff5f0' ><font >118: 0.00</font></td>
+    <td port='state_96' bgcolor='#fff5f0' ><font >96: 0.00</font></td>
+    <td port='state_90' bgcolor='#fff5f0' ><font >90: 0.00</font></td>
+    <td port='state_84' bgcolor='#fff5f0' ><font >84: 0.00</font></td>
+    <td port='state_78' bgcolor='#fff5f0' ><font >78: 0.00</font></td>
+    <td port='state_72' bgcolor='#fff5f0' ><font >72: 0.00</font></td>
+    <td port='state_45' bgcolor='#fff5f0' ><font >45: 0.00</font></td>
+    <td port='state_39' bgcolor='#fff5f0' ><font >39: 0.00</font></td>
+    <td port='state_33' bgcolor='#fff5f0' ><font >33: 0.00</font></td>
+    <td port='state_27' bgcolor='#fff5f0' ><font >27: 0.00</font></td>
+    <td port='state_21' bgcolor='#fff5f0' ><font >21: 0.00</font></td>
+    <td port='state_15' bgcolor='#fff5f0' ><font >15: 0.00</font></td>
+    <td port='state_9' bgcolor='#fff5f0' ><font >9: 0.00</font></td>
+    <td port='state_4' bgcolor='#fff5f0' ><font >4: 0.00</font></td>
+  </tr>
+</table>
+    >
+    pos="0,0!"
+  ];
+  center_1_70 [pos = "0.000000,34.500000!" label="0.00"];
+  rna:state_7 -> center_1_70 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_6 -> center_1_70 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_2_69 [pos = "0.000000,33.500000!" label="0.00"];
+  rna:state_13 -> center_2_69 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_12 -> center_2_69 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_3_68 [pos = "0.000000,32.500000!" label="0.00"];
+  rna:state_19 -> center_3_68 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_18 -> center_3_68 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_4_67 [pos = "0.000000,31.500000!" label="0.00"];
+  rna:state_25 -> center_4_67 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_24 -> center_4_67 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_5_66 [pos = "0.000000,30.500000!" label="0.00"];
+  rna:state_31 -> center_5_66 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_30 -> center_5_66 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_6_65 [pos = "0.000000,29.500000!" label="0.00"];
+  rna:state_37 -> center_6_65 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_36 -> center_6_65 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_7_64 [pos = "0.000000,28.500000!" label="0.00"];
+  rna:state_43 -> center_7_64 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_42 -> center_7_64 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_47_63 [pos = "19.500000,8.000000!" label="0.00"];
+  rna:state_70 -> center_47_63 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_69 -> center_47_63 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_48_62 [pos = "19.500000,7.000000!" label="0.00"];
+  rna:state_76 -> center_48_62 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_75 -> center_48_62 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_49_61 [pos = "19.500000,6.000000!" label="0.00"];
+  rna:state_82 -> center_49_61 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_81 -> center_49_61 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_50_60 [pos = "19.500000,5.000000!" label="0.00"];
+  rna:state_88 -> center_50_60 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_87 -> center_50_60 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_51_59 [pos = "19.500000,4.000000!" label="0.00"];
+  rna:state_94 -> center_51_59 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_93 -> center_51_59 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_10_24 [pos = "-18.500000,7.000000!" label="0.00"];
+  rna:state_125 -> center_10_24 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_124 -> center_10_24 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_11_23 [pos = "-18.500000,6.000000!" label="0.00"];
+  rna:state_131 -> center_11_23 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_130 -> center_11_23 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_12_22 [pos = "-18.500000,5.000000!" label="0.00"];
+  rna:state_137 -> center_12_22 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_136 -> center_12_22 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_13_21 [pos = "-18.500000,4.000000!" label="0.00"];
+  rna:state_143 -> center_13_21 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_142 -> center_13_21 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_26_42 [pos = "-1.500000,8.000000!" label="0.00"];
+  rna:state_176 -> center_26_42 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_175 -> center_26_42 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_27_41 [pos = "-1.500000,7.000000!" label="0.00"];
+  rna:state_182 -> center_27_41 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_181 -> center_27_41 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_28_40 [pos = "-1.500000,6.000000!" label="0.00"];
+  rna:state_188 -> center_28_40 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_187 -> center_28_40 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_29_39 [pos = "-1.500000,5.000000!" label="0.00"];
+  rna:state_194 -> center_29_39 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_193 -> center_29_39 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  center_30_38 [pos = "-1.500000,4.000000!" label="0.00"];
+  rna:state_200 -> center_30_38 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+  rna:state_199 -> center_30_38 [arrowhead=none penwidth=10 color="#f7fcf5" ];
+}

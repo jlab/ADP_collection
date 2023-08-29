@@ -23,7 +23,7 @@ jobs:
         cd Testing/
         bash run.sh /usr/
     - name: python dependencies
-      run: pip install pandas numpy
+      run: pip install pandas numpy matplotlib
     - name: python tests
       run: |
         cd Testing/
