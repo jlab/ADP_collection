@@ -14,6 +14,7 @@ signature sig_sat(alphabet, answer) {
 
 algebra alg_count auto count;
 algebra alg_enum auto enum;
+algebra alg_tikz auto tikz;
 
 /* This algebra removes all candidates from the search space that do not
    satisfy the SAT formula. The formula is satisfied if all clauses are

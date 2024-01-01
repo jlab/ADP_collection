@@ -12,6 +12,7 @@ signature sig_matmult(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_minmult implements sig_matmult(alphabet=char, answer=typ_matrix) {
   typ_matrix single(char openBracket, int rows, char cross, int cols, char closeBracket) {

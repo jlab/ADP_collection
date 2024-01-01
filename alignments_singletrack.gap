@@ -25,6 +25,7 @@ signature sig_alignments(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_similarity implements sig_alignments(alphabet=char, answer=int) {
   int Ins(alphabet a, int x) {

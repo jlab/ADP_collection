@@ -13,6 +13,7 @@ signature sig_palindrome(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_pretty implements sig_palindrome(alphabet = char, answer = Rope) {
   Rope match(alphabet a, Rope x, alphabet b) {

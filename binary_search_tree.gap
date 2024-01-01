@@ -11,6 +11,7 @@ signature sig_bst(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 // It is not trivial to see why this computation works.
 // You should first draw out an example tree and compute the mean access time by hand.

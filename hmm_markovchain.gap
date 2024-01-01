@@ -9,6 +9,7 @@ signature sig_dinuc(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_prob implements sig_dinuc(alphabet=char, answer=float) {
   float transition(float transition, char symbol, float x) {

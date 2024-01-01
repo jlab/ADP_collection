@@ -13,6 +13,7 @@ signature sig_rna(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_dotBracket implements sig_rna(alphabet=char, answer=string) {
   string pair(Subsequence lb, string x, Subsequence rb) {

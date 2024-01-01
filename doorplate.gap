@@ -12,6 +12,7 @@ signature sig_doorplate(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_pretty implements sig_doorplate(alphabet=char, answer=Rope) {
   Rope root(Rope x) {

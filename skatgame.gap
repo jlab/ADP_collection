@@ -10,6 +10,7 @@ signature sig_skat(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_pretty implements sig_skat(alphabet=char, answer=Rope) {
   Rope card(char suit, Rope face) {

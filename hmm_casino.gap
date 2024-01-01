@@ -30,6 +30,7 @@ signature sig_casino(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_viterbi implements sig_casino(alphabet=char, answer=float) {
   float transition_start_fair(float transition, float emission, float x) {

@@ -59,6 +59,7 @@ signature sig_elmamun(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_pretty implements sig_elmamun(alphabet=char, answer=Rope) {
   Rope number(int value) {

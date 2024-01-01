@@ -26,6 +26,7 @@ signature sig_cpg(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_viterbi implements sig_cpg(alphabet=char, answer=float) {
   float transition_start_rich(float transition, float emission, float x) {

@@ -12,6 +12,7 @@ signature sig_genefinder(alphabet, answer) {
 
 algebra alg_count auto count;
 algebra alg_enum auto enum;
+algebra alg_tikz auto tikz;
 
 algebra alg_translate implements sig_genefinder(alphabet=char, answer=Rope) {
   Rope utr5(alphabet b, Rope x) {
