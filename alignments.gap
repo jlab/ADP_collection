@@ -404,6 +404,9 @@ grammar gra_gotoh uses sig_alignments(axiom=A) {
        # h;
 }
 
+/*
+example inputs: ZEITGEIST FREIZEIT
+*/
 instance ins_needlemanwunsch_count = gra_needlemanwunsch(alg_count);
 instance ins_semiglobal_count = gra_semiglobal(alg_count);
 instance ins_endgapfree_count = gra_endgapfree(alg_count);

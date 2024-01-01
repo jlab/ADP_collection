@@ -160,12 +160,13 @@ grammar gra_elmamun uses sig_elmamun(axiom = formula) {
 	  # h;
 }
 
+/*
+example inputs: 1+2*3*4+5
+*/
+
 instance pp = gra_elmamun(alg_pretty);
 instance enum = gra_elmamun(alg_enum);
 instance sellerpp = gra_elmamun(alg_seller * alg_pretty);
 instance buyerpp = gra_elmamun(alg_buyer * alg_pretty);
 instance ppbuyer = gra_elmamun(alg_pretty * alg_buyer);
 instance timepp = gra_elmamun(alg_time * alg_pretty);
-
-// example input:
-// "1+2*3*4+5"

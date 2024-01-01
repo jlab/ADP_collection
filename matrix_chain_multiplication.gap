@@ -111,6 +111,10 @@ grammar gra_matmult_assert uses sig_matmult(axiom = formula) {
 	  # h;
 }
 
+/*
+example inputs: (2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)
+*/
+
 instance minmult = gra_matmult(alg_minmult);
 instance ppminmult = gra_matmult(alg_pretty * alg_minmult);
 instance depthminmultpp = gra_matmult(alg_depth * alg_minmult * alg_pretty);
@@ -120,6 +124,3 @@ instance kdepthminmultpp = gra_matmult(alg_kdepth * alg_minmult * alg_pretty);
 instance reject_wrong_candidates = gra_matmult_assert(alg_minmult);
 instance assert_minmultenum = gra_matmult_assert(alg_minmult * alg_enum);
 instance assert_minmultenumcount = gra_matmult_assert(alg_minmult * (alg_enum * alg_count));
-
-// example input:
-// "(2x10)*(10x50)*(50x10)*(10x1)*(1x20)*(20x20)"
