@@ -191,9 +191,11 @@ algebra alg_pretty implements sig_alignments(alphabet=char, answer=typ_ali) {
   }
 }
 
-// a special pretty print algebra that uses the same symbol '-' for all types of gapc
-// this illustrates semantic ambiguity and is e.g. used as the introductory example
-// in the lecture slides.
+/* 
+a special pretty print algebra that uses the same symbol '-' for all types of gapc
+this illustrates semantic ambiguity and is e.g. used as the introductory example
+in the lecture slides.
+*/
 algebra alg_pretty_onegap extends alg_pretty {
   typ_ali Region(<Rope afirst, void>, typ_ali x, <Rope asecond, void>) {
     typ_ali res;
@@ -246,8 +248,10 @@ algebra alg_pretty_onegap extends alg_pretty {
   }
 }
 
-// an algebra that computes a Trace representation of an Alignment,
-// i.e. we arbitraily say that Insertions cannot preceed Deletions (could be vice versa)
+/*
+an algebra that computes a Trace representation of an Alignment,
+i.e. we arbitraily say that Insertions cannot preceed Deletions (could be vice versa)
+*/
 algebra alg_editops implements sig_alignments(alphabet=char, answer=Rope) {
   Rope Ins(<alphabet a, void>, Rope x) {
     Rope res;
@@ -313,7 +317,9 @@ algebra alg_editops implements sig_alignments(alphabet=char, answer=Rope) {
 
 
 
-// pair-wise global alignment
+/* 
+pair-wise global alignment
+*/
 grammar gra_needlemanwunsch uses sig_alignments(axiom=A) {
   A = Ins(<CHAR, EMPTY>, A)
     | Del(<EMPTY, CHAR>, A)
@@ -322,11 +328,12 @@ grammar gra_needlemanwunsch uses sig_alignments(axiom=A) {
     # h;
 }
 
-/* a grammar that enumerates all traces but not all alignments
-   difference:  X-   and  -X   are two different alignments, but the same trace
-                -Y        Y-
-   this is because there is no evidence that could tell us if deletion came before insertion
-   or vice versa.
+/* 
+a grammar that enumerates all traces but not all alignments
+difference:  X-   and  -X   are two different alignments, but the same trace
+             -Y        Y-
+this is because there is no evidence that could tell us if deletion came before insertion
+or vice versa.
 */
 grammar gra_traces uses sig_alignments(axiom=A) {
   A = Ins(<CHAR, EMPTY>, I)
@@ -348,7 +355,9 @@ grammar gra_traces uses sig_alignments(axiom=A) {
     # h;
 }
 
-// pair-wise semiglobal alignment, i.e. long in short
+/*
+pair-wise semiglobal alignment, i.e. long in short
+*/
 grammar gra_semiglobal uses sig_alignments(axiom=S) {
   S = Region(<ROPE0, EMPTY>, A, <ROPE0, EMPTY>)
     # h;
@@ -360,7 +369,9 @@ grammar gra_semiglobal uses sig_alignments(axiom=S) {
     # h;
 }
 
-// pair-wise end-gap-free alignment, e.g. for assembly
+/*
+pair-wise end-gap-free alignment, e.g. for assembly
+*/
 grammar gra_endgapfree uses sig_alignments(axiom=S) {
   S = Region_Pr(<ROPE0, EMPTY>, A, <EMPTY, ROPE0>)
     # h;
@@ -372,7 +383,9 @@ grammar gra_endgapfree uses sig_alignments(axiom=S) {
     # h;
 }
 
-// pair-wise local alignment, e.g. BLAST
+/*
+pair-wise local alignment, e.g. BLAST
+*/
 grammar gra_smithwaterman uses sig_alignments(axiom=S) {
   S = Region(<ROPE0, EMPTY>, T, <ROPE0, EMPTY>)
     # h;
@@ -387,7 +400,9 @@ grammar gra_smithwaterman uses sig_alignments(axiom=S) {
     # h;
 }
 
-// pair-wise global alignment with affine gap costs
+/*
+pair-wise global alignment with affine gap costs
+*/
 grammar gra_gotoh uses sig_alignments(axiom=A) {
   A = Ins(<CHAR, EMPTY>, xIns)
     | Del(<EMPTY, CHAR>, xDel)
@@ -429,7 +444,9 @@ instance ins_gotoh_similaritypp = gra_gotoh(alg_similarity * alg_pretty);
 instance test = gra_smithwaterman(alg_pretty * alg_enum);
 instance ins_traces_ppcount = gra_traces(alg_pretty * alg_count);
 
-// used in lecture as example of how to compile:
+/*
+used in lecture as example of how to compile:
+*/
 instance ins_gotoh_pp = gra_gotoh(alg_pretty_onegap);
 instance ins_gotoh_ppenum = gra_gotoh(alg_pretty_onegap * alg_enum);
 instance ins_gotoh_countmanual = gra_gotoh(alg_countmanual);
