@@ -299,6 +299,10 @@ grammar gra_weather uses sig_weather(axiom=start) {
                 # h;
 }
 
+/*
+example inputs: SSRR
+*/
+
 instance enum = gra_weather(alg_enum);
 instance viterbistatesmult = gra_weather(alg_viterbi * alg_states * alg_mult);
 instance fwd = gra_weather(alg_fwd);

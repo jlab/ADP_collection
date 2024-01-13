@@ -13,14 +13,16 @@ algebra alg_enum auto enum;
 algebra alg_count auto count;
 algebra alg_tikz auto tikz;
 
-// It is not trivial to see why this computation works.
-// You should first draw out an example tree and compute the mean access time by hand.
-// The idea is, that you need to know the "depth" of an element within the tree.
-// You can than compute the mean access time as the sum of key probabilities * key depth
-// In ADP, you construct the trees buttom up, i.e. you don't know the depth!!
-// The trick is, that whenever you go one level up, you repreat addition of the "yield"
-// seen so far to the regular mean access time from left and right components plus the new key
-// AND you need to update the yield. Thus, we need a tuple as answer type.
+/*
+It is not trivial to see why this computation works.
+You should first draw out an example tree and compute the mean access time by hand.
+The idea is, that you need to know the "depth" of an element within the tree.
+You can than compute the mean access time as the sum of key probabilities * key depth
+In ADP, you construct the trees buttom up, i.e. you don't know the depth!!
+The trick is, that whenever you go one level up, you repreat addition of the "yield"
+seen so far to the regular mean access time from left and right components plus the new key
+AND you need to update the yield. Thus, we need a tuple as answer type.
+*/
 algebra alg_mean_access_time implements sig_bst(alphabet=char, answer=typ_access) {
   typ_access branch(typ_access left, typ_access entry, typ_access right) {
     typ_access res;
@@ -48,8 +50,10 @@ algebra alg_mean_access_time implements sig_bst(alphabet=char, answer=typ_access
   }
 }
 
-// note that branch(nil, X, nil) and leaf(X) both collapse to the
-// pretty print: "(X)", i.e. they are semantically ambiguous!
+/*
+note that branch(nil, X, nil) and leaf(X) both collapse to the
+pretty print: "(X)", i.e. they are semantically ambiguous!
+*/
 algebra alg_pretty implements sig_bst(alphabet=char, answer=Rope) {
   Rope branch(Rope left, Rope x, Rope right) {
     Rope res;
@@ -96,23 +100,25 @@ grammar gra_bst uses sig_bst(axiom = bstree) {
   entry = keypair(INT, CHAR(':'), FLOAT, CHAR(',')) # h;
 }
 
+/* 
+example inputs: 1:0.22,3:0.18,4:0.2,8:0.05,10:0.25,11:0.02,15:0.08,
+*/
+/*
+note the trailing , at the end of each input!
+the example input above corresponds to the following table:
+key	prob
+1	0.22
+3	0.18
+4	0.2
+8	0.05
+10	0.25
+11	0.02
+15	0.08
+*/
+
 instance enum = gra_bst(alg_enum);
 instance count = gra_bst(alg_count);
 instance matpp = gra_bst(alg_mean_access_time * alg_pretty);
 instance ppmat = gra_bst(alg_pretty * alg_mean_access_time);
 instance ppcount = gra_bst(alg_pretty * alg_count);
 instance matppcount = gra_bst(alg_mean_access_time * alg_pretty * alg_count);
-
-/* example input (note the trailing , at the end of each input!)
-   "1:0.22,3:0.18,4:0.2,8:0.05,10:0.25,11:0.02,15:0.08,"
-
-   corresponds to the following table:
-   key	prob
-   1	0.22
-   3	0.18
-   4	0.2
-   8	0.05
-   10	0.25
-   11	0.02
-   15	0.08
-*/

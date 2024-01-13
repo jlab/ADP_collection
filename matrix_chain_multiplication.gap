@@ -92,20 +92,24 @@ algebra alg_kdepth extends alg_depth {
 }
 
 
+/*
+note: right now, we "accept" impossible matrix chains,
+      i.e. left.cols is not enforced to be right.rows
+*/
 grammar gra_matmult uses sig_matmult(axiom = formula) {
-  // note: right now, we "accept" impossible matrix chains,
-  //       i.e. left.cols is not enforced to be right.rows
   formula = single(CHAR('('), INT, CHAR('x'), INT, CHAR(')'))
           | mult(formula, CHAR('*'), formula)
 	  # h;
 }
 
+/*
+take care when applying the assertMatchingDimensions:
+1) instance must contain alg_minmult
+2) parenthesis become important in algebra products: alg_minmult * alg_enum * alg_count implicitly is
+   (alg_minmult * alg_enum) * alg_count, which will fail to compile
+   use explicit parenthesis like: alg_minmult * (alg_enum * alg_count)
+*/
 grammar gra_matmult_assert uses sig_matmult(axiom = formula) {
-  // take care when applying the assertMatchingDimensions:
-  // 1) instance must contain alg_minmult
-  // 2) parenthesis become important in algebra products: alg_minmult * alg_enum * alg_count implicitly is
-  //    (alg_minmult * alg_enum) * alg_count, which will fail to compile
-  //    use explicit parenthesis like: alg_minmult * (alg_enum * alg_count)
   formula = single(CHAR('('), INT, CHAR('x'), INT, CHAR(')'))
           | mult(formula, CHAR('*'), formula) suchthat_overlay assertMatchingDimension
 	  # h;

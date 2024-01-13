@@ -410,6 +410,10 @@ grammar gra_casino uses sig_casino(axiom=start) {
 		  # h;
 }
 
+/*
+example inputs: 15626
+*/
+
 instance enum = gra_casino(alg_enum);
 instance viterbistatesmult = gra_casino(alg_viterbi * alg_states * alg_mult);
 instance fwd = gra_casino(alg_fwd);

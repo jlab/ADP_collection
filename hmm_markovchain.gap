@@ -87,4 +87,8 @@ grammar gra_dinuc uses sig_dinuc(axiom=state_init) {
   state_end = nil(EMPTY);
 }
 
+/*
+example inputs: ACCT
+*/
+
 instance ins_ppprobenum = gra_dinuc(alg_pretty * alg_prob * alg_enum);

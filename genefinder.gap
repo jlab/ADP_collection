@@ -160,10 +160,12 @@ grammar gra_genefinder uses sig_genefinder(axiom = start) {
 	  # h;
 }
 
+/*
+example inputs: AAUAUGUCUGUUAAUGCAAUGGCGGCGAUUGAGUUUUCCAAGUAGAAUGAGGAUG
+*/
+
 instance ins_aa = gra_genefinder(alg_translate);
 instance ins_aacount = gra_genefinder(alg_translate * alg_count);
 instance ins_scoreaa = gra_genefinder(alg_score * alg_translate);
 instance ins_aascore = gra_genefinder(alg_translate * alg_score);
 instance ins_count = gra_genefinder(alg_count);
-
-// example input "AAUAUGUCUGUUAAUGCAAUGGCGGCGAUUGAGUUUUCCAAGUAGAAUGAGGAUG"

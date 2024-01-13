@@ -124,9 +124,14 @@ grammar gra_skat uses sig_skat(axiom=Deal) {
        # h;
 }
 
+/*
+Unfortunately, we cannot use Unicode characters for suits, thus we need to encode
+those as single characters. An example input string would look like:
+*/
+/*
+example inputs: d10s7dJsJh8dAdQd7c7cAhAhJd8hQh7s8cJh10c8sKhKs9c9dKsQs10d9cQcKh9c10sA
+*/
+
 instance pp = gra_skat(alg_pretty);
 instance count = gra_skat(alg_count);
 
-// Unfortunately, we cannot use Unicode characters for suits, thus we need to encode
-// those as single characters. An example input string would look like:
-// "d10s7dJsJh8dAdQd7c7cAhAhJd8hQh7s8cJh10c8sKhKs9c9dKsQs10d9cQcKh9c10sA"

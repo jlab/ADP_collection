@@ -353,6 +353,10 @@ grammar gra_cpg uses sig_cpg(axiom=start) {
 		# h;
 }
 
+/*
+example inputs: GCGGCCGA
+*/
+
 instance enum = gra_cpg(alg_enum);
 instance viterbistatesmult = gra_cpg(alg_viterbi * alg_states * alg_mult);
 instance fwd = gra_cpg(alg_fwd);

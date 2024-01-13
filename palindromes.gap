@@ -99,6 +99,9 @@ grammar gra_palloc uses sig_palindrome(axiom = skip_l) {
        # h;
 }
 
+/*
+example inputs: abbabaabba
+*/
 
 instance enum = gra_palindrome(alg_enum);
 instance loc = gra_palloc(alg_palScore * alg_pretty);
