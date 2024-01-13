@@ -26,6 +26,7 @@ signature sig_cpg(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_viterbi implements sig_cpg(alphabet=char, answer=float) {
   float transition_start_rich(float transition, float emission, float x) {
@@ -351,6 +352,10 @@ grammar gra_cpg uses sig_cpg(axiom=start) {
 		| emission_poor_T(CONST_FLOAT(0.37), CHAR('T'))
 		# h;
 }
+
+/*
+example inputs: GCGGCCGA
+*/
 
 instance enum = gra_cpg(alg_enum);
 instance viterbistatesmult = gra_cpg(alg_viterbi * alg_states * alg_mult);

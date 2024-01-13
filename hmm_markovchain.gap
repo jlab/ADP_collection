@@ -9,6 +9,7 @@ signature sig_dinuc(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_prob implements sig_dinuc(alphabet=char, answer=float) {
   float transition(float transition, char symbol, float x) {
@@ -85,5 +86,9 @@ grammar gra_dinuc uses sig_dinuc(axiom=state_init) {
           
   state_end = nil(EMPTY);
 }
+
+/*
+example inputs: ACCT
+*/
 
 instance ins_ppprobenum = gra_dinuc(alg_pretty * alg_prob * alg_enum);

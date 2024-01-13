@@ -12,6 +12,7 @@ signature sig_doorplate(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_pretty implements sig_doorplate(alphabet=char, answer=Rope) {
   Rope root(Rope x) {
@@ -82,13 +83,16 @@ grammar gra_doorplate uses sig_doorplate(axiom=start) {
 	  # h;
 }
 
+/*
+example inputs: <floor><office><id>M3-114</id><person>Stefan</person></office><office><id>M3-107</id><person>Maddis</person><person>Jan</person></office></floor>
+*/
+
 instance test = gra_doorplate(alg_enum);
 instance pp = gra_doorplate(alg_pretty);
 instance count = gra_doorplate(alg_count);
 
-// example input:
-// "<floor><office><id>M3-114</id><person>Stefan</person></office><office><id>M3-107</id><person>Maddis</person><person>Jan</person></office></floor>"
-
-// note that there are multiple parse tree possible, because e.g. 
-// algebra function "person" need to start with "<person>" and end with "</person>".
-// A valid parse is "<person>Maddis</person>". However, also valid is "<person>Maddis</person><person>Jan</person>".
+/* 
+note that there are multiple parse tree possible, because e.g. 
+algebra function "person" need to start with "<person>" and end with "</person>".
+A valid parse is "<person>Maddis</person>". However, also valid is "<person>Maddis</person><person>Jan</person>".
+/*

@@ -59,6 +59,7 @@ signature sig_elmamun(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_pretty implements sig_elmamun(alphabet=char, answer=Rope) {
   Rope number(int value) {
@@ -159,12 +160,13 @@ grammar gra_elmamun uses sig_elmamun(axiom = formula) {
 	  # h;
 }
 
+/*
+example inputs: 1+2*3*4+5
+*/
+
 instance pp = gra_elmamun(alg_pretty);
 instance enum = gra_elmamun(alg_enum);
 instance sellerpp = gra_elmamun(alg_seller * alg_pretty);
 instance buyerpp = gra_elmamun(alg_buyer * alg_pretty);
 instance ppbuyer = gra_elmamun(alg_pretty * alg_buyer);
 instance timepp = gra_elmamun(alg_time * alg_pretty);
-
-// example input:
-// "1+2*3*4+5"

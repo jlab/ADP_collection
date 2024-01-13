@@ -13,6 +13,7 @@ signature sig_palindrome(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_pretty implements sig_palindrome(alphabet = char, answer = Rope) {
   Rope match(alphabet a, Rope x, alphabet b) {
@@ -98,6 +99,9 @@ grammar gra_palloc uses sig_palindrome(axiom = skip_l) {
        # h;
 }
 
+/*
+example inputs: abbabaabba
+*/
 
 instance enum = gra_palindrome(alg_enum);
 instance loc = gra_palloc(alg_palScore * alg_pretty);

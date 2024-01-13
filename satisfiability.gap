@@ -14,19 +14,23 @@ signature sig_sat(alphabet, answer) {
 
 algebra alg_count auto count;
 algebra alg_enum auto enum;
+algebra alg_tikz auto tikz;
 
-/* This algebra removes all candidates from the search space that do not
-   satisfy the SAT formula. The formula is satisfied if all clauses are
-   satisfied. A clause is satisfied if there is at least one assigntrue
-   with a positive literal or a assignfalse with a negative literal.  It
-   does not assure that the assigned byte vectors for all clauses are
-   equal. To assure this too, use the product algebra (alg_sat * alg_eqa) but
-   not (alg_eqa * alg_sat) due to slightly different definition of * in
-   Bellman's GAP, compared to Haskell ADP
+/* 
+This algebra removes all candidates from the search space that do not
+satisfy the SAT formula. The formula is satisfied if all clauses are
+satisfied. A clause is satisfied if there is at least one assigntrue
+with a positive literal or a assignfalse with a negative literal.  It
+does not assure that the assigned byte vectors for all clauses are
+equal. To assure this too, use the product algebra (alg_sat * alg_eqa) but
+not (alg_eqa * alg_sat) due to slightly different definition of * in
+Bellman's GAP, compared to Haskell ADP
 */
-// Unfortunately, we cannot use data type bool, since this would result
-// in a conflict in the generated code between testing for is_empty of
-// a candidate and assigning the value "false". 
+/*
+Unfortunately, we cannot use data type bool, since this would result
+in a conflict in the generated code between testing for is_empty of
+a candidate and assigning the value "false". 
+*/
 algebra alg_sat implements sig_sat(alphabet=char, answer=int) {
   int addliteral(int l, int c) {
     if ((l > 0) || (c > 0)) {
@@ -72,9 +76,10 @@ algebra alg_sat implements sig_sat(alphabet=char, answer=int) {
   }
 }
 
-/* assures that the assignments are equal for all clauses. This algebra
-   only assures that the assigned byte vectors for all clauses are equal
-   completely independent of the satisfyability of the formula.
+/* 
+assures that the assignments are equal for all clauses. This algebra
+only assures that the assigned byte vectors for all clauses are equal
+completely independent of the satisfyability of the formula.
 */
 algebra alg_eqa implements sig_sat(alphabet=char, answer=Rope) {
   Rope addliteral(Rope l, Rope c) {
@@ -175,9 +180,12 @@ grammar gra_sat uses sig_sat(axiom=selection) {
       ; // no choice, since Bellman's principle is violated
 }
 
+/*
+example inputs: PP-&-NP
+*/
+
 instance ins_enum = gra_sat(alg_enum);
 instance ins_pp = gra_sat(alg_pretty);
 
 instance ins_sateqapp = gra_sat(alg_sat * alg_eqa * alg_pretty);
 
-// example input "PP-&-NP"

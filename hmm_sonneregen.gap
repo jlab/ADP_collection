@@ -22,6 +22,7 @@ signature sig_weather(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_viterbi implements sig_weather(alphabet=char, answer=float) {
   float transition_start_hoch(float transition, float emission, float x) {
@@ -297,6 +298,10 @@ grammar gra_weather uses sig_weather(axiom=start) {
                 | emission_tief_regen(CONST_FLOAT(0.9), CHAR('R'))
                 # h;
 }
+
+/*
+example inputs: SSRR
+*/
 
 instance enum = gra_weather(alg_enum);
 instance viterbistatesmult = gra_weather(alg_viterbi * alg_states * alg_mult);

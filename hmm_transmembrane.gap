@@ -10,6 +10,7 @@ signature sig_transmembrane(alphabet, answer) {
 
 algebra alg_enum auto enum;
 algebra alg_count auto count;
+algebra alg_tikz auto tikz;
 
 algebra alg_viterbi implements sig_transmembrane(alphabet=char, answer=float) {
   float transition(float transition, char state, float emission, float x) {
@@ -86,7 +87,9 @@ algebra alg_structure implements sig_transmembrane(alphabet=char, answer=Rope) {
   }
 }
 
-//st_ short for state, em_ short for emission
+/*
+st_ short for state, em_ short for emission
+*/
 grammar gra_transmembrane uses sig_transmembrane(axiom=st_init) {
   st_init = transition(CONST_FLOAT(0.89), CONST_CHAR('e'), em_ext, st_ext)
           | transition(CONST_FLOAT(0.01), CONST_CHAR('T'), em_trans, st_trans)
@@ -133,5 +136,9 @@ grammar gra_transmembrane uses sig_transmembrane(axiom=st_init) {
          | emission(CONST_FLOAT(0.2), CHAR('T'))
          # h;
 }
+
+/*
+example inputs: GCGGCCGA
+*/
 
 instance test = gra_transmembrane(alg_states);
