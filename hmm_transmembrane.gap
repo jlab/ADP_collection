@@ -17,7 +17,7 @@ algebra alg_viterbi implements sig_transmembrane(alphabet=char, answer=float) {
     return transition * emission * x;
   }  
   float transitionend(float transition, float x) {
-    return transition * emission * x;
+    return transition * x;
   }  
   float emission(float emission, char a) {
     return emission;
